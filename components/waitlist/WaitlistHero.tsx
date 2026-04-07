@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { getPublicSiteUrl } from "@/lib/site";
+import type { WaitlistLeadInput } from "@/lib/waitlist/types";
 
 const ROLES = [
   { label: "🎓 Student", value: "Student / Job Seeker" },
@@ -85,7 +87,7 @@ function WaitlistFormBlock({
   const [success, setSuccess] = useState(false);
   const [position, setPosition] = useState(0);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     const f = firstName.trim();
     const e = email.trim();
     if (!f || !e || !e.includes("@")) {
@@ -95,16 +97,39 @@ function WaitlistFormBlock({
     setError(null);
     setSubmitting(true);
 
-    // Design-only: no backend yet — short delay then success state (same UX as static HTML).
-    window.setTimeout(() => {
+    try {
+      const payload: WaitlistLeadInput = {
+        firstName: f,
+        lastName: lastName.trim(),
+        email: e,
+        age: age ? Number(age) : null,
+        zip: zip.trim(),
+        role,
+      };
+
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = (await response.json()) as { ok?: boolean; message?: string };
+      if (!response.ok || !data.ok) {
+        setError(data.message ?? "Could not join waitlist right now. Please try again.");
+        return;
+      }
+
       const next = initialTotalRef.current + 1;
       initialTotalRef.current = next;
       setPosition(next);
       setDisplayCount(next);
       setSuccess(true);
+    } catch {
+      setError("Could not join waitlist right now. Please try again.");
+    } finally {
       setSubmitting(false);
-    }, 450);
-  }, [firstName, email, initialTotalRef, setDisplayCount]);
+    }
+  }, [age, email, firstName, initialTotalRef, lastName, role, setDisplayCount, zip]);
 
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
@@ -139,6 +164,11 @@ function WaitlistFormBlock({
           <br />
           In the meantime — spread the word.
         </p>
+        <div style={{ marginBottom: 14 }}>
+          <Link href="/navigator/quiz" className="submit-btn" style={{ display: "inline-flex", textDecoration: "none" }}>
+            Try Career Quiz Now →
+          </Link>
+        </div>
         <ShareRow twitterHref={twitterHref} linkedInHref={linkedInHref} siteUrl={siteUrl} />
       </div>
     );
