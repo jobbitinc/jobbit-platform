@@ -10,7 +10,10 @@ function sanitizeBody(body: Partial<WaitlistLeadInput>): WaitlistLeadInput | nul
   }
 
   const parsedAge = body.age == null ? null : Number(body.age);
-  const age = Number.isFinite(parsedAge) && parsedAge >= 14 && parsedAge <= 40 ? parsedAge : null;
+  const age =
+    parsedAge != null && Number.isFinite(parsedAge) && parsedAge >= 14 && parsedAge <= 40
+      ? parsedAge
+      : null;
 
   return {
     firstName,
