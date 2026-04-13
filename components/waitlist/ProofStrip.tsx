@@ -1,8 +1,8 @@
 const items = [
   { num: "3.8M", label: "Trade jobs going unfilled by 2032" },
   { num: "$90K+", label: "Average union electrician salary" },
-  { num: "$0", label: "Student cost — earn while you learn" },
-  { num: "7", label: "Steps from curious to first paycheck" },
+  { num: "Paid", label: "Training that starts with real wages on the job" },
+  { num: "4", label: "Steps from curious to first paycheck" },
 ] as const;
 
 export function ProofStrip() {

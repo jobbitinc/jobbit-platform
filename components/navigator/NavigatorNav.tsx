@@ -1,8 +1,24 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCareer } from "./CareerContext";
+
+function NavLogoLink() {
+  return (
+    <Link href="/navigator" className="nav-logo" aria-label="Jobbit navigator home">
+      <Image
+        src="/jobbit-logo.svg"
+        alt=""
+        width={132}
+        height={24}
+        className="nav-logo-img"
+        priority
+      />
+    </Link>
+  );
+}
 
 export function NavigatorNav() {
   const pathname = usePathname();
@@ -11,9 +27,7 @@ export function NavigatorNav() {
   if (pathname?.startsWith("/navigator/quiz")) {
     return (
       <nav className="nv-nav">
-        <Link href="/navigator" className="nav-logo">
-          Job<span>bit</span>
-        </Link>
+        <NavLogoLink />
         <Link href="/navigator" className="nav-cta">
           ← Exit
         </Link>
@@ -23,9 +37,7 @@ export function NavigatorNav() {
 
   return (
     <nav className="nv-nav">
-      <Link href="/navigator" className="nav-logo">
-        Job<span>bit</span>
-      </Link>
+      <NavLogoLink />
       {pathname === "/navigator" || pathname === "/navigator/" ? (
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <Link href="/navigator/login" style={{ fontSize: 14, color: "var(--text-2)" }}>

@@ -141,7 +141,7 @@ function WaitlistFormBlock({
 
   const siteUrl = typeof window !== "undefined" ? getPublicSiteUrl() : "https://jobbit.vercel.app";
   const tweet = encodeURIComponent(
-    `Just joined the Jobbit waitlist — an AI that matches you with trade careers & apprenticeships. No college debt. Real $100K careers. #Jobbit`,
+    `Just joined the Jobbit waitlist — an AI that matches you with trade careers & apprenticeships. Real $100K careers. #Jobbit`,
   );
   const twitterHref = `https://twitter.com/intent/tweet?text=${tweet}&url=${encodeURIComponent(siteUrl)}`;
   const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl)}`;

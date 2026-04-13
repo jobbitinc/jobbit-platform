@@ -1,19 +1,27 @@
 /* Jobbit waitlist — scoped so other routes can use different layouts */
 [data-waitlist-page] {
-  --navy: #060d1a;
-  --navy2: #0b1629;
-  --blue: #1a5aff;
-  --blue2: #0e40cc;
-  --green: #00c278;
-  --green2: #00995f;
-  --white: #eef4ff;
-  --muted: #5a7299;
-  --border: rgba(26, 90, 255, 0.18);
-  --grid: rgba(26, 90, 255, 0.055);
+  --color-page-bg: #0066ff;
+  --color-surface: #3385ff;
+  --color-primary: #ccff99;
+  --color-dark: #0d1b40;
+  --color-text-heading: #ffffff;
+  --color-text-body: rgba(255, 255, 255, 0.9);
+
+  /* Aliases used across existing rules */
+  --navy: var(--color-surface);
+  --navy2: #2b6eeb;
+  --blue: #b8d9ff;
+  --blue2: var(--color-surface);
+  --green: var(--color-primary);
+  --green2: #a8e682;
+  --white: var(--color-text-heading);
+  --muted: rgba(255, 255, 255, 0.72);
+  --border: rgba(255, 255, 255, 0.22);
+  --grid: rgba(255, 255, 255, 0.06);
 
   position: relative;
-  background: var(--navy);
-  color: var(--white);
+  background: var(--color-page-bg);
+  color: var(--color-text-body);
   font-family: var(--font-dm-sans), sans-serif;
   font-weight: 300;
   min-height: 100vh;
@@ -35,8 +43,8 @@
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-    linear-gradient(rgba(26, 90, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 90, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px;
 }
 
@@ -50,7 +58,7 @@
 [data-waitlist-page] .orb-blue {
   width: 600px;
   height: 600px;
-  background: rgba(26, 90, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   top: -200px;
   right: -100px;
   animation: wl-drift 14s ease-in-out infinite alternate;
@@ -58,7 +66,7 @@
 [data-waitlist-page] .orb-green {
   width: 400px;
   height: 400px;
-  background: rgba(0, 194, 120, 0.09);
+  background: rgba(204, 255, 153, 0.12);
   bottom: -100px;
   left: -80px;
   animation: wl-drift 18s ease-in-out infinite alternate-reverse;
@@ -82,18 +90,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 22px 48px;
-  background: rgba(6, 13, 26, 0.8);
+  background: rgba(0, 102, 255, 0.88);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
-[data-waitlist-page] .logo {
-  font-family: var(--font-bebas), sans-serif;
-  font-size: 26px;
-  letter-spacing: 4px;
-  background: linear-gradient(120deg, var(--blue) 0%, var(--green) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+[data-waitlist-page] .wl-logo-link {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+[data-waitlist-page] .wl-logo-img {
+  height: 28px;
+  width: auto;
+  max-width: 148px;
+  object-fit: contain;
 }
 [data-waitlist-page] .nav-tag {
   font-family: var(--font-dm-mono), monospace;
@@ -119,17 +129,18 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid rgba(0, 194, 120, 0.35);
-  background: rgba(0, 194, 120, 0.07);
+  border: 1px solid rgba(13, 27, 64, 0.12);
+  background: var(--color-primary);
   padding: 10px 22px;
   margin-bottom: 40px;
   animation: wl-fadeDown 0.6s ease both;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
 }
 [data-waitlist-page] .counter-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--color-dark);
   animation: wl-pulse 1.8s ease-in-out infinite;
 }
 @keyframes wl-pulse {
@@ -148,12 +159,12 @@
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--color-dark);
 }
 [data-waitlist-page] .counter-num {
   font-family: var(--font-bebas), sans-serif;
   font-size: 18px;
-  color: var(--green);
+  color: var(--color-dark);
   letter-spacing: 1px;
 }
 
@@ -162,7 +173,7 @@
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--color-primary);
   margin-bottom: 24px;
   animation: wl-fadeDown 0.6s 0.1s ease both;
   opacity: 0;
@@ -174,12 +185,13 @@
   line-height: 0.88;
   letter-spacing: 2px;
   margin-bottom: 32px;
+  color: var(--color-text-heading);
   animation: wl-fadeDown 0.7s 0.15s ease both;
   opacity: 0;
 }
 [data-waitlist-page] .hero h1 .line-green {
   display: block;
-  background: linear-gradient(120deg, var(--blue) 10%, var(--green) 100%);
+  background: linear-gradient(120deg, #ffffff 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -189,7 +201,7 @@
   font-size: clamp(16px, 2vw, 19px);
   font-weight: 300;
   line-height: 1.75;
-  color: rgba(238, 244, 255, 0.6);
+  color: rgba(255, 255, 255, 0.82);
   max-width: 560px;
   margin: 0 auto 52px;
   animation: wl-fadeDown 0.7s 0.22s ease both;
@@ -227,9 +239,9 @@
 [data-waitlist-page] .form-input {
   width: 100%;
   padding: 15px 18px;
-  background: rgba(26, 90, 255, 0.06);
+  background: rgba(13, 27, 64, 0.28);
   border: 1px solid var(--border);
-  color: var(--white);
+  color: var(--color-text-heading);
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 15px;
   font-weight: 300;
@@ -238,8 +250,8 @@
   -webkit-appearance: none;
 }
 [data-waitlist-page] .form-input:focus {
-  border-color: var(--blue);
-  background: rgba(26, 90, 255, 0.1);
+  border-color: var(--color-primary);
+  background: rgba(13, 27, 64, 0.4);
 }
 [data-waitlist-page] .form-input::placeholder {
   color: var(--muted);
@@ -255,7 +267,7 @@
   padding: 12px 8px;
   text-align: center;
   border: 1px solid var(--border);
-  background: rgba(26, 90, 255, 0.04);
+  background: rgba(13, 27, 64, 0.2);
   color: var(--muted);
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 13px;
@@ -263,14 +275,14 @@
   transition: all 0.2s;
 }
 [data-waitlist-page] .role-btn:hover {
-  border-color: var(--blue);
-  color: var(--white);
-  background: rgba(26, 90, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: var(--color-text-heading);
+  background: rgba(13, 27, 64, 0.32);
 }
 [data-waitlist-page] .role-btn.active {
-  border-color: var(--green);
-  color: var(--green);
-  background: rgba(0, 194, 120, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-dark);
+  background: rgba(204, 255, 153, 0.22);
 }
 
 [data-waitlist-page] .role-label {
@@ -292,27 +304,17 @@
   font-size: 12px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 500;
-  background: linear-gradient(120deg, var(--blue) 0%, var(--green) 100%);
-  color: white;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: var(--color-dark);
   border: none;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: opacity 0.2s, transform 0.2s;
-}
-[data-waitlist-page] .submit-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, var(--green) 0%, var(--blue) 100%);
-  opacity: 0;
-  transition: opacity 0.35s;
-}
-[data-waitlist-page] .submit-btn:hover::before {
-  opacity: 1;
+  transition: filter 0.2s, transform 0.2s;
 }
 [data-waitlist-page] .submit-btn:hover {
+  filter: brightness(1.06);
   transform: translateY(-2px);
 }
 [data-waitlist-page] .submit-btn span {
@@ -352,8 +354,8 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: 2px solid var(--green);
-  background: rgba(0, 194, 120, 0.1);
+  border: 2px solid var(--color-primary);
+  background: rgba(204, 255, 153, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -379,20 +381,20 @@
   margin-bottom: 16px;
 }
 [data-waitlist-page] .success-headline span {
-  color: var(--green);
+  color: var(--color-primary);
 }
 
 [data-waitlist-page] .success-pos {
   display: inline-block;
-  border: 1px solid rgba(0, 194, 120, 0.4);
-  background: rgba(0, 194, 120, 0.07);
+  border: 1px solid rgba(204, 255, 153, 0.45);
+  background: rgba(204, 255, 153, 0.1);
   padding: 12px 28px;
   margin-bottom: 20px;
 }
 [data-waitlist-page] .success-pos-num {
   font-family: var(--font-bebas), sans-serif;
   font-size: 40px;
-  background: linear-gradient(120deg, var(--blue), var(--green));
+  background: linear-gradient(120deg, #ffffff, var(--color-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -409,7 +411,7 @@
 
 [data-waitlist-page] .success-sub {
   font-size: 16px;
-  color: rgba(238, 244, 255, 0.6);
+  color: rgba(255, 255, 255, 0.82);
   max-width: 400px;
   margin: 0 auto;
   line-height: 1.7;
@@ -437,8 +439,8 @@
   display: inline-block;
 }
 [data-waitlist-page] .share-btn:hover {
-  border-color: var(--blue);
-  color: var(--white);
+  border-color: var(--color-primary);
+  color: var(--color-text-heading);
 }
 
 [data-waitlist-page] .proof-strip {
@@ -465,7 +467,7 @@
   font-family: var(--font-bebas), sans-serif;
   font-size: 52px;
   line-height: 1;
-  background: linear-gradient(120deg, var(--blue) 0%, var(--green) 100%);
+  background: linear-gradient(120deg, #ffffff 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -491,7 +493,7 @@
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--color-primary);
   margin-bottom: 48px;
   display: flex;
   align-items: center;
@@ -506,10 +508,10 @@
 }
 [data-waitlist-page] .why-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 2px;
-  background: rgba(26, 90, 255, 0.07);
-  border: 1px solid rgba(26, 90, 255, 0.07);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 [data-waitlist-page] .why-card {
   background: var(--navy);
@@ -518,7 +520,7 @@
   cursor: default;
 }
 [data-waitlist-page] .why-card:hover {
-  background: rgba(26, 90, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
 }
 [data-waitlist-page] .why-icon {
   font-size: 28px;
@@ -529,12 +531,12 @@
   font-family: var(--font-bebas), sans-serif;
   font-size: 24px;
   letter-spacing: 1px;
-  color: var(--white);
+  color: var(--color-text-heading);
   margin-bottom: 14px;
 }
 [data-waitlist-page] .why-desc {
   font-size: 14px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.82);
   line-height: 1.75;
 }
 
@@ -549,8 +551,8 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2px;
-  background: rgba(26, 90, 255, 0.07);
-  border: 1px solid rgba(26, 90, 255, 0.07);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 [data-waitlist-page] .who-card {
   background: var(--navy);
@@ -558,14 +560,14 @@
   transition: background 0.3s;
 }
 [data-waitlist-page] .who-card:hover {
-  background: rgba(0, 194, 120, 0.03);
+  background: rgba(255, 255, 255, 0.05);
 }
 [data-waitlist-page] .who-role {
   font-family: var(--font-dm-mono), monospace;
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--color-primary);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -575,19 +577,19 @@
   content: "";
   width: 20px;
   height: 1px;
-  background: var(--green);
+  background: var(--color-primary);
   opacity: 0.5;
 }
 [data-waitlist-page] .who-title {
   font-family: var(--font-bebas), sans-serif;
   font-size: 30px;
   letter-spacing: 1px;
-  color: var(--white);
+  color: var(--color-text-heading);
   margin-bottom: 14px;
 }
 [data-waitlist-page] .who-desc {
   font-size: 14px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.82);
   line-height: 1.75;
   max-width: 380px;
 }
@@ -600,14 +602,14 @@
 }
 [data-waitlist-page] .who-list li {
   font-size: 14px;
-  color: rgba(238, 244, 255, 0.65);
+  color: rgba(255, 255, 255, 0.88);
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 [data-waitlist-page] .who-list li::before {
   content: "→";
-  color: var(--green);
+  color: var(--color-primary);
   flex-shrink: 0;
   font-size: 13px;
   margin-top: 1px;
@@ -622,12 +624,14 @@
 }
 [data-waitlist-page] .bottom-cta h2 {
   font-family: var(--font-bebas), sans-serif;
-  font-size: clamp(52px, 8vw, 100px);
-  line-height: 0.9;
+  font-size: clamp(40px, 7vw, 88px);
+  line-height: 0.95;
   margin-bottom: 20px;
+  color: var(--color-text-heading);
+  letter-spacing: 1px;
 }
-[data-waitlist-page] .bottom-cta h2 span {
-  background: linear-gradient(120deg, var(--blue), var(--green));
+[data-waitlist-page] .bottom-cta h2 .bottom-cta-accent {
+  background: linear-gradient(120deg, #ffffff, var(--color-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -644,16 +648,16 @@
   font-size: 12px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 500;
-  background: linear-gradient(120deg, var(--blue) 0%, var(--green) 100%);
-  color: white;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: var(--color-dark);
   padding: 18px 52px;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.2s;
+  transition: filter 0.2s, transform 0.2s;
 }
 [data-waitlist-page] .bottom-btn:hover {
-  opacity: 0.88;
+  filter: brightness(1.06);
   transform: translateY(-2px);
 }
 
@@ -666,14 +670,12 @@
   justify-content: space-between;
   align-items: center;
 }
-[data-waitlist-page] .footer-logo {
-  font-family: var(--font-bebas), sans-serif;
-  font-size: 18px;
-  letter-spacing: 3px;
-  background: linear-gradient(120deg, var(--blue), var(--green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+[data-waitlist-page] .wl-footer-logo-img {
+  height: 22px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
 }
 [data-waitlist-page] .footer-copy {
   font-family: var(--font-dm-mono), monospace;
