@@ -10,22 +10,22 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import type { MatchResultSet, QuizAnswers, StoredUser } from "@/lib/career/types";
+import type { MatchResultSet, QuizAnswers } from "@/lib/career/types";
 import {
   clearPendingCareer,
-  getSessionEmail,
-  getStoredUserProfile,
-  loadCareerForEmail,
-  loginUser as storageLogin,
-  logoutUser as storageLogout,
   readPendingCareer,
-  registerUser as storageRegister,
-  saveCareerForSessionEmail,
   writePendingCareer,
 } from "@/lib/career-storage";
-import { generateFallbackResults } from "@/lib/match-fallback";
+import { toPromptAnswers, validateMatchResultSet } from "@/lib/career/validation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-export type SessionUser = { email: string; name: string };
+export type SessionUser = { id: string; email: string; name: string };
+
+type PersistedNavigatorState = {
+  answers: QuizAnswers;
+  matches: MatchResultSet;
+  completedSteps: Record<string, boolean>;
+};
 
 type CareerContextValue = {
   user: SessionUser | null;
@@ -44,9 +44,9 @@ type CareerContextValue = {
   toast: string | null;
   showToast: (msg: string) => void;
   completeQuiz: (answers: QuizAnswers) => Promise<void>;
-  login: (email: string, password: string) => void;
-  signup: (email: string, name: string, password: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, name: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
   toggleStep: (key: string) => void;
   hydrateFromStorage: () => void;
 };
@@ -67,98 +67,194 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<string | null>(null);
   const authRedirectRef = useRef<string | null>(null);
 
+  const readServerState = useCallback(async (): Promise<PersistedNavigatorState | null> => {
+    const supabase = getSupabaseBrowserClient();
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) return null;
+    const response = await fetch("/api/navigator/state", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const body = (await response.json()) as {
+      ok?: boolean;
+      message?: string;
+      data?: unknown;
+    };
+    if (!response.ok || !body.ok) {
+      throw new Error(body.message ?? "Failed to read navigator state.");
+    }
+    if (!body.data) return null;
+    const payload = body.data as PersistedNavigatorState;
+    const promptAnswers = toPromptAnswers(payload.answers);
+    const matches = validateMatchResultSet(payload.matches, promptAnswers);
+    return {
+      answers: payload.answers,
+      matches,
+      completedSteps: payload.completedSteps ?? {},
+    };
+  }, []);
+
+  const writeServerState = useCallback(async (payload: PersistedNavigatorState) => {
+    const supabase = getSupabaseBrowserClient();
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("No active auth session.");
+    const response = await fetch("/api/navigator/state", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    const body = (await response.json()) as { ok?: boolean; message?: string };
+    if (!response.ok || !body.ok) {
+      throw new Error(body.message ?? "Failed to save navigator state.");
+    }
+  }, []);
+
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     window.setTimeout(() => setToast(null), 2800);
   }, []);
 
   const hydrateFromStorage = useCallback(() => {
-    const email = getSessionEmail();
-    if (!email) {
-      setUser(null);
-      return;
-    }
-    const profile = getStoredUserProfile(email);
-    const career = loadCareerForEmail(email);
-    if (profile && career) {
-      setUser({ email: profile.email, name: profile.name });
-      setAnswers(career.answers);
-      setMatches(career.matches);
-      setCompletedSteps(career.completedSteps ?? {});
+    const pending = readPendingCareer();
+    if (pending) {
+      setAnswers(pending.answers);
+      setMatches(pending.matches);
+      setCompletedSteps(pending.completedSteps ?? {});
     }
   }, []);
 
   useEffect(() => {
-    const email = getSessionEmail();
-    if (email) {
-      hydrateFromStorage();
-    } else {
-      const pending = readPendingCareer();
-      if (pending) {
-        setAnswers(pending.answers);
-        setMatches(pending.matches);
-        setCompletedSteps(pending.completedSteps ?? {});
+    const run = async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data.user) {
+          setUser(null);
+          hydrateFromStorage();
+          setBootstrapped(true);
+          return;
+        }
+        const nextUser = {
+          id: data.user.id,
+          email: data.user.email ?? "",
+          name: ((data.user.user_metadata?.name as string | undefined) ?? "Friend").trim() || "Friend",
+        };
+        setUser(nextUser);
+        const state = await readServerState();
+        if (state) {
+          setAnswers(state.answers);
+          setMatches(state.matches);
+          setCompletedSteps(state.completedSteps);
+        } else {
+          const pending = readPendingCareer();
+          if (pending) {
+            setAnswers(pending.answers);
+            setMatches(pending.matches);
+            setCompletedSteps(pending.completedSteps ?? {});
+            await writeServerState({
+              answers: pending.answers,
+              matches: pending.matches,
+              completedSteps: pending.completedSteps ?? {},
+            });
+            clearPendingCareer();
+          }
+        }
+      } catch {
+        showToast("Could not load your saved navigator data.");
+      } finally {
+        setBootstrapped(true);
       }
-    }
-    setBootstrapped(true);
-  }, [hydrateFromStorage]);
+    };
+    void run();
+  }, [hydrateFromStorage, readServerState, showToast, writeServerState]);
 
   const persistBundle = useCallback(
-    (next: { answers: QuizAnswers; matches: MatchResultSet; completedSteps: Record<string, boolean> }) => {
-      if (getSessionEmail()) {
-        saveCareerForSessionEmail(next);
-      } else {
+    async (next: PersistedNavigatorState) => {
+      if (!user) {
         writePendingCareer(next);
+        return;
       }
+      await writeServerState(next);
     },
-    [],
+    [user, writeServerState],
   );
 
   const completeQuiz = useCallback(
     async (quizAnswers: QuizAnswers) => {
       setIsMatching(true);
       setAnswers(quizAnswers);
-      await new Promise((r) => setTimeout(r, 900));
-      const result = generateFallbackResults(quizAnswers);
-      setMatches(result);
-      setCompletedSteps({});
-      setActiveTradeTab(0);
-      persistBundle({
-        answers: quizAnswers,
-        matches: result,
-        completedSteps: {},
-      });
-      setIsMatching(false);
-      router.push("/navigator/results");
+      try {
+        const promptAnswers = toPromptAnswers(quizAnswers);
+        const response = await fetch("/api/match", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers: promptAnswers }),
+        });
+        const body = (await response.json()) as {
+          ok?: boolean;
+          message?: string;
+          data?: unknown;
+        };
+        if (!response.ok || !body.ok || !body.data) {
+          throw new Error(body.message ?? "Could not generate matches right now.");
+        }
+        const result = validateMatchResultSet(body.data, promptAnswers);
+        setMatches(result);
+        setCompletedSteps({});
+        setActiveTradeTab(0);
+        await persistBundle({
+          answers: quizAnswers,
+          matches: result,
+          completedSteps: {},
+        });
+        router.push("/navigator/results");
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Could not generate matches right now.";
+        showToast(message);
+      } finally {
+        setIsMatching(false);
+      }
     },
-    [persistBundle, router],
+    [persistBundle, router, showToast],
   );
 
   const login = useCallback(
-    (email: string, password: string) => {
-      const res = storageLogin(email, password);
-      if (!res.ok) {
-        showToast(res.error);
+    async (email: string, password: string) => {
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error || !data.user) {
+        showToast(error?.message ?? "Invalid email or password.");
         return;
       }
-      setUser({ email: res.user.email, name: res.user.name });
-      const career = loadCareerForEmail(email);
-      if (career) {
-        setAnswers(career.answers);
-        setMatches(career.matches);
-        setCompletedSteps(career.completedSteps ?? {});
+      setUser({
+        id: data.user.id,
+        email: data.user.email ?? email.trim(),
+        name: ((data.user.user_metadata?.name as string | undefined) ?? "Friend").trim() || "Friend",
+      });
+      const state = await readServerState();
+      if (state) {
+        setAnswers(state.answers);
+        setMatches(state.matches);
+        setCompletedSteps(state.completedSteps);
       }
       setAuthOpen(false);
-      showToast(`Welcome back, ${res.user.name}!`);
+      showToast(`Welcome back, ${((data.user.user_metadata?.name as string | undefined) ?? "Friend").trim() || "Friend"}!`);
       const dest = authRedirectRef.current;
       authRedirectRef.current = null;
       router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
     },
-    [router, showToast],
+    [readServerState, router, showToast],
   );
 
   const signup = useCallback(
-    (email: string, name: string, password: string) => {
+    async (email: string, name: string, password: string) => {
       let m = matches;
       let a = answers;
       let c = completedSteps;
@@ -177,30 +273,43 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         showToast("No quiz results to save. Take the quiz first.");
         return;
       }
-      const u: StoredUser = { email: email.trim(), name: name.trim(), password };
-      const res = storageRegister(u, {
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { name: name.trim() },
+        },
+      });
+      if (error) {
+        showToast(error.message);
+        return;
+      }
+      if (!data.session || !data.user) {
+        showToast("Account created. Please verify your email, then sign in.");
+        setAuthOpen(false);
+        return;
+      }
+      setUser({ id: data.user.id, email: data.user.email ?? email.trim(), name: name.trim() || "Friend" });
+      await writeServerState({
         answers: a,
         matches: m,
         completedSteps: c,
       });
-      if (!res.ok) {
-        showToast(res.error);
-        return;
-      }
-      setUser({ email: u.email, name: u.name });
+      clearPendingCareer();
       setAuthOpen(false);
-      showToast(`Welcome, ${u.name}!`);
+      showToast(`Welcome, ${name.trim() || "Friend"}!`);
       const dest = authRedirectRef.current;
       authRedirectRef.current = null;
       router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
     },
-    [answers, completedSteps, matches, router, showToast],
+    [answers, completedSteps, matches, router, showToast, writeServerState],
   );
 
-  const logout = useCallback(() => {
-    storageLogout();
+  const logout = useCallback(async () => {
+    const supabase = getSupabaseBrowserClient();
+    await supabase.auth.signOut();
     setUser(null);
-    clearPendingCareer();
     setAnswers({});
     setMatches(null);
     setCompletedSteps({});
@@ -213,7 +322,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       setCompletedSteps((prev) => {
         const next = { ...prev, [key]: !prev[key] };
         if (matches) {
-          persistBundle({ answers, matches, completedSteps: next });
+          void persistBundle({ answers, matches, completedSteps: next });
         }
         return next;
       });

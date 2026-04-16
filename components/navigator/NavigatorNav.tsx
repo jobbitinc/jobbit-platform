@@ -65,7 +65,7 @@ export function NavigatorNav() {
         )
       ) : null}
       {pathname === "/navigator/dashboard" ? (
-        <button type="button" className="nav-cta" onClick={logout}>
+        <button type="button" className="nav-cta" onClick={() => void logout()}>
           Sign Out
         </button>
       ) : null}

@@ -15,9 +15,9 @@ export function AuthModal() {
   const submit = () => {
     if (!email.trim() || !password) return;
     if (authMode === "signup") {
-      signup(email.trim(), name.trim(), password);
+      void signup(email.trim(), name.trim(), password);
     } else {
-      login(email.trim(), password);
+      void login(email.trim(), password);
     }
   };
 
