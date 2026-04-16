@@ -23,7 +23,6 @@ export function WaitlistNav() {
           priority
         />
       </a>
-      <div className="nav-tag">AI Career Navigator · Skilled Trades</div>
     </motion.nav>
   );
 }

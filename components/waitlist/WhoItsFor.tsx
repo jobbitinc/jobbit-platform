@@ -10,7 +10,7 @@ export function WhoItsFor() {
             Your ambition is real. Your potential is real. Jobbit gives you the tools to turn both into a career that pays.
           </div>
           <ul className="who-list">
-            <li>Ages 16–30, no experience required</li>
+            <li>Ages 16-24, no experience required</li>
             <li>Discover trades matched to your strengths and interests</li>
             <li>Get a personalized step-by-step plan from day one</li>
             <li>Earn $60K–$120K+</li>

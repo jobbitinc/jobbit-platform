@@ -58,21 +58,7 @@ const headlineLine = {
 
 export function WaitlistHero() {
   const initial = useRef(getInitialCount());
-  const [displayCount, setDisplayCount] = useState(initial.current - 12);
-
-  useEffect(() => {
-    const target = initial.current;
-    let current = target - 12;
-    const step = () => {
-      if (current < target) {
-        current++;
-        setDisplayCount(current);
-        setTimeout(step, 80);
-      }
-    };
-    const t = setTimeout(step, 800);
-    return () => clearTimeout(t);
-  }, []);
+  const [, setDisplayCount] = useState(initial.current);
 
   return (
     <section className="hero">
@@ -84,9 +70,7 @@ export function WaitlistHero() {
         transition={{ duration: 0.52, ease: easeSmooth }}
       >
         <span className="counter-dot" />
-        <span className="counter-text">Waitlist open —</span>
-        <span className="counter-num">{displayCount}</span>
-        <span className="counter-text">people ahead of you</span>
+        <span className="counter-text">Waitlist Open</span>
       </motion.div>
 
       <motion.div
@@ -95,7 +79,7 @@ export function WaitlistHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.06, ease: easeSmooth }}
       >
-        Early Access · Limited Spots
+        Get Early Access
       </motion.div>
 
       <motion.h1 variants={headlineContainer} initial="hidden" animate="visible">
@@ -106,7 +90,7 @@ export function WaitlistHero() {
           CAREER STARTS
         </motion.span>
         <motion.span className="hero-headline-line" variants={headlineLine}>
-          HERE.
+          HERE
         </motion.span>
       </motion.h1>
 
@@ -116,7 +100,7 @@ export function WaitlistHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.58, delay: 0.62, ease: easeSmooth }}
       >
-        Jobbit is the AI navigator that matches young people with high-paying trade careers and union apprenticeships — then walks them all the way to their first paycheck.
+        Jobbit is the AI Navigator that makes career opportunities easier to find
       </motion.p>
 
       <motion.div
@@ -344,7 +328,6 @@ function WaitlistFormBlock({
         <span>{submitting ? "Saving your spot..." : "Secure My Spot on the Waitlist →"}</span>
       </button>
       {error ? <div className="form-error">{error}</div> : null}
-      <p className="form-privacy">🔒 Zero spam. Zero selling your data. We&apos;ll email you when it&apos;s your turn.</p>
     </div>
   );
 }
