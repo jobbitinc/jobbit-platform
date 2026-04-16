@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Jobbit — AI Career Navigator",
   description:
     "Take the career quiz, get matched to skilled trades, and follow your personalized action plan.",
+  robots: { index: false, follow: false },
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

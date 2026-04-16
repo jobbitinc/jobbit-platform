@@ -5,6 +5,7 @@ import { WaitlistBackground } from "./WaitlistBackground";
 import { WaitlistFooter } from "./WaitlistFooter";
 import { WaitlistHero } from "./WaitlistHero";
 import { WaitlistNav } from "./WaitlistNav";
+import { WaitlistScrollReveal } from "./WaitlistScrollReveal";
 import { WhoItsFor } from "./WhoItsFor";
 import { WhyJobbit } from "./WhyJobbit";
 
@@ -14,9 +15,15 @@ export function WaitlistPage() {
       <WaitlistBackground />
       <WaitlistNav />
       <WaitlistHero />
-      <ProofStrip />
-      <WhyJobbit />
-      <WhoItsFor />
+      <WaitlistScrollReveal>
+        <ProofStrip />
+      </WaitlistScrollReveal>
+      <WaitlistScrollReveal delay={0.04}>
+        <WhyJobbit />
+      </WaitlistScrollReveal>
+      <WaitlistScrollReveal delay={0.06}>
+        <WhoItsFor />
+      </WaitlistScrollReveal>
       <BottomCta />
       <WaitlistFooter />
     </div>

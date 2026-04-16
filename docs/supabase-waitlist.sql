@@ -1,3 +1,7 @@
+-- Waitlist API uses SUPABASE_SERVICE_ROLE_KEY (server only). That key bypasses RLS.
+-- If you use the anon key by mistake, inserts will fail (RLS blocks everything below).
+-- Get the service_role secret from Supabase Dashboard → Project Settings → API.
+
 create table if not exists public.waitlist_leads (
   id bigint generated always as identity primary key,
   first_name text not null,

@@ -1,7 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { getPublicSiteUrl } from "@/lib/site";
 import type { WaitlistLeadInput } from "@/lib/waitlist/types";
 
@@ -14,6 +14,21 @@ const ROLES = [
   { label: "✦ Other", value: "Other" },
 ] as const;
 
+function RequiredStar() {
+  return (
+    <span className="field-required-star" aria-hidden="true">
+      *
+    </span>
+  );
+}
+
+function validateWaitlistFields(firstName: string, email: string): string | null {
+  if (!firstName.trim()) return "Please enter your first name.";
+  const e = email.trim().toLowerCase();
+  if (!e || !e.includes("@")) return "Please enter a valid email address.";
+  return null;
+}
+
 function getInitialCount(): number {
   const raw = process.env.NEXT_PUBLIC_WAITLIST_INITIAL_COUNT;
   if (raw) {
@@ -22,6 +37,24 @@ function getInitialCount(): number {
   }
   return 247;
 }
+
+const easeSmooth = [0.22, 1, 0.36, 1] as const;
+
+const headlineContainer = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.18 },
+  },
+};
+
+const headlineLine = {
+  hidden: { opacity: 0, y: "0.12em" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.72, ease: easeSmooth },
+  },
+};
 
 export function WaitlistHero() {
   const initial = useRef(getInitialCount());
@@ -43,28 +76,56 @@ export function WaitlistHero() {
 
   return (
     <section className="hero">
-      <div className="counter-badge" aria-live="polite">
+      <motion.div
+        className="counter-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.52, ease: easeSmooth }}
+      >
         <span className="counter-dot" />
         <span className="counter-text">Waitlist open —</span>
         <span className="counter-num">{displayCount}</span>
         <span className="counter-text">people ahead of you</span>
-      </div>
+      </motion.div>
 
-      <div className="hero-eyebrow">Early Access · Limited Spots</div>
+      <motion.div
+        className="hero-eyebrow"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.06, ease: easeSmooth }}
+      >
+        Early Access · Limited Spots
+      </motion.div>
 
-      <h1>
-        YOUR NEXT
-        <br />
-        <span className="line-green">CAREER STARTS</span>
-        <br />
-        HERE.
-      </h1>
+      <motion.h1 variants={headlineContainer} initial="hidden" animate="visible">
+        <motion.span className="hero-headline-line" variants={headlineLine}>
+          YOUR NEXT
+        </motion.span>
+        <motion.span className="hero-headline-line line-green" variants={headlineLine}>
+          CAREER STARTS
+        </motion.span>
+        <motion.span className="hero-headline-line" variants={headlineLine}>
+          HERE.
+        </motion.span>
+      </motion.h1>
 
-      <p className="hero-sub">
+      <motion.p
+        className="hero-sub"
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.58, delay: 0.62, ease: easeSmooth }}
+      >
         Jobbit is the AI navigator that matches young people with high-paying trade careers and union apprenticeships — then walks them all the way to their first paycheck.
-      </p>
+      </motion.p>
 
-      <WaitlistFormBlock initialTotalRef={initial} setDisplayCount={setDisplayCount} />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, delay: 0.78, ease: easeSmooth }}
+      >
+        <WaitlistFormBlock initialTotalRef={initial} setDisplayCount={setDisplayCount} />
+      </motion.div>
     </section>
   );
 }
@@ -85,25 +146,24 @@ function WaitlistFormBlock({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [position, setPosition] = useState(0);
 
   const onSubmit = useCallback(async () => {
-    const f = firstName.trim();
-    const e = email.trim();
-    if (!f || !e || !e.includes("@")) {
-      setError("Please enter your first name and a valid email.");
+    const msg = validateWaitlistFields(firstName, email);
+    if (msg) {
+      setError(msg);
       return;
     }
     setError(null);
     setSubmitting(true);
 
     try {
+      const zipDigits = zip.trim().replace(/\s/g, "");
       const payload: WaitlistLeadInput = {
-        firstName: f,
+        firstName: firstName.trim(),
         lastName: lastName.trim(),
-        email: e,
-        age: age ? Number(age) : null,
-        zip: zip.trim(),
+        email: email.trim().toLowerCase(),
+        age: age.trim() === "" ? null : Math.round(Number(age)),
+        zip: zipDigits,
         role,
       };
 
@@ -121,7 +181,6 @@ function WaitlistFormBlock({
 
       const next = initialTotalRef.current + 1;
       initialTotalRef.current = next;
-      setPosition(next);
       setDisplayCount(next);
       setSuccess(true);
     } catch {
@@ -148,29 +207,30 @@ function WaitlistFormBlock({
 
   if (success) {
     return (
-      <div className="success-state">
-        <div className="success-icon">✓</div>
-        <div className="success-headline">
-          YOU&apos;RE IN.
-          <br />
-          <span>YOU&apos;RE ON THE LIST.</span>
-        </div>
-        <div className="success-pos">
-          <span className="success-pos-num">#{position}</span>
-          <span className="success-pos-label">Your Waitlist Position</span>
-        </div>
-        <p className="success-sub">
-          We&apos;ll notify you the moment early access opens.
-          <br />
-          In the meantime — spread the word.
-        </p>
-        <div style={{ marginBottom: 14 }}>
-          <Link href="/navigator/quiz" className="submit-btn" style={{ display: "inline-flex", textDecoration: "none" }}>
-            Try Career Quiz Now →
-          </Link>
-        </div>
-        <ShareRow twitterHref={twitterHref} linkedInHref={linkedInHref} siteUrl={siteUrl} />
-      </div>
+      <motion.div
+        className="success-state"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: easeSmooth }}
+      >
+        <motion.div
+          className="success-icon"
+          initial={{ scale: 0.88, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.42, delay: 0.06, ease: easeSmooth }}
+        >
+          {"\u2713"}
+        </motion.div>
+        <div className="success-headline">You&apos;re on the list.</div>
+        <p className="success-sub">We will be in touch soon.</p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: easeSmooth }}
+        >
+          <ShareRow twitterHref={twitterHref} linkedInHref={linkedInHref} siteUrl={siteUrl} />
+        </motion.div>
+      </motion.div>
     );
   }
 
@@ -180,6 +240,7 @@ function WaitlistFormBlock({
         <div>
           <label className="field-label" htmlFor="wl-first">
             First Name
+            <RequiredStar />
           </label>
           <input
             id="wl-first"
@@ -187,6 +248,8 @@ function WaitlistFormBlock({
             type="text"
             placeholder="Jordan"
             autoComplete="given-name"
+            required
+            aria-required="true"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
@@ -210,6 +273,7 @@ function WaitlistFormBlock({
       <div className="form-full">
         <label className="field-label" htmlFor="wl-email">
           Email Address
+          <RequiredStar />
         </label>
         <input
           id="wl-email"
@@ -217,6 +281,8 @@ function WaitlistFormBlock({
           type="email"
           placeholder="jordan@email.com"
           autoComplete="email"
+          required
+          aria-required="true"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -246,8 +312,10 @@ function WaitlistFormBlock({
             id="wl-zip"
             className="form-input"
             type="text"
+            inputMode="numeric"
             placeholder="e.g. 07030"
             maxLength={10}
+            autoComplete="postal-code"
             value={zip}
             onChange={(e) => setZip(e.target.value)}
           />
@@ -255,8 +323,10 @@ function WaitlistFormBlock({
       </div>
 
       <div className="form-full">
-        <span className="role-label">I am a...</span>
-        <div className="role-grid">
+        <span className="role-label" id="wl-role-label">
+          I am a...
+        </span>
+        <div className="role-grid" role="group" aria-labelledby="wl-role-label">
           {ROLES.map((r) => (
             <button
               key={r.value}
