@@ -181,7 +181,7 @@ export function NavigatorLanding() {
         <div className="section-tag">How it works</div>
         <h2 className="section-title">From quiz to career in minutes.</h2>
         <p className="section-sub">
-          No resume, no experience, no idea where to start? That&apos;s exactly who Jobbit is built for.
+          No resume, no experience, no idea where to start? That&apos;s exactly who jobbit is built for.
         </p>
         <div className="steps-grid">
           {[
@@ -233,7 +233,7 @@ export function NavigatorLanding() {
       </div>
 
       <footer className="nv-footer">
-        © 2025 Jobbit Inc. · AI Career Navigator for the Skilled Trades · Free for students, always. ·{" "}
+        © 2025 jobbit Inc. · AI Career Navigator for the Skilled Trades · Free for students, always. ·{" "}
         <Link href="/" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline" }}>
           Join the waitlist
         </Link>

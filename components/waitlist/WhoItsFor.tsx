@@ -7,7 +7,7 @@ export function WhoItsFor() {
           <div className="who-role">For Students & Job Seekers</div>
           <div className="who-title">YOUR FUTURE STARTS HERE</div>
           <div className="who-desc">
-            Your ambition is real. Your potential is real. Jobbit gives you the tools to turn both into a career that pays.
+            Your ambition is real. Your potential is real. jobbit gives you the tools to turn both into a career that pays.
           </div>
           <ul className="who-list">
             <li>Ages 16-24, no experience required</li>

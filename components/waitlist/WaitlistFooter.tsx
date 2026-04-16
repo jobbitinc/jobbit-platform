@@ -5,12 +5,12 @@ export function WaitlistFooter() {
     <footer className="wl-footer">
       <Image
         src="/logo.png"
-        alt="Jobbit"
+        alt="jobbit"
         width={240}
         height={48}
         className="wl-footer-logo-img"
       />
-      <div className="footer-copy">© 2025 Jobbit Inc. — AI Career Navigator for the Skilled Trades</div>
+      <div className="footer-copy">© 2025 jobbit Inc. — AI Career Navigator for the Skilled Trades</div>
     </footer>
   );
 }

@@ -38,7 +38,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Jobbit — Join the Waitlist",
+  title: "jobbit — Join the Waitlist",
   description:
     "AI navigator that matches young people with high-paying trade careers and union apprenticeships.",
   icons: {

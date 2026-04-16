@@ -13,10 +13,10 @@ export function WaitlistNav() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: easeSmooth }}
     >
-      <a href="/" className="wl-logo-link" aria-label="Jobbit home">
+      <a href="/" className="wl-logo-link" aria-label="jobbit home">
         <Image
           src="/logo.png"
-          alt="Jobbit"
+          alt="jobbit"
           width={240}
           height={48}
           className="wl-logo-img"

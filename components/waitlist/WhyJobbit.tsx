@@ -7,7 +7,7 @@ const cards = [
   {
     icon: "🗺",
     title: "Step-by-Step Guide",
-    desc: "From quiz to first paycheck — Jobbit builds your personal 30-day action plan and tracks every milestone.",
+    desc: "From quiz to first paycheck — jobbit builds your personal 30-day action plan and tracks every milestone.",
   },
   {
     icon: "⚡",
@@ -24,7 +24,7 @@ const cards = [
 export function WhyJobbit() {
   return (
     <div className="why-section">
-      <div className="section-eyebrow">Why Jobbit</div>
+      <div className="section-eyebrow">Why jobbit</div>
       <div className="why-grid">
         {cards.map((c) => (
           <div className="why-card" key={c.title}>

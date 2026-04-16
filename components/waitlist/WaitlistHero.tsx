@@ -100,7 +100,7 @@ export function WaitlistHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.58, delay: 0.62, ease: easeSmooth }}
       >
-        Jobbit is the AI Navigator that makes career opportunities easier to find
+        jobbit is the AI Navigator that makes career opportunities easier to find
       </motion.p>
 
       <motion.div
@@ -184,7 +184,7 @@ function WaitlistFormBlock({
 
   const siteUrl = typeof window !== "undefined" ? getPublicSiteUrl() : "https://jobbit.vercel.app";
   const tweet = encodeURIComponent(
-    `Just joined the Jobbit waitlist — an AI that matches you with trade careers & apprenticeships. Real $100K careers. #Jobbit`,
+    `Just joined the jobbit waitlist — an AI that matches you with trade careers & apprenticeships. Real $100K careers. #jobbit`,
   );
   const twitterHref = `https://twitter.com/intent/tweet?text=${tweet}&url=${encodeURIComponent(siteUrl)}`;
   const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl)}`;

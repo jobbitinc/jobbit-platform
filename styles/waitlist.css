@@ -1,4 +1,4 @@
-/* Jobbit waitlist — scoped so other routes can use different layouts */
+/* jobbit waitlist — scoped so other routes can use different layouts */
 [data-waitlist-page] {
   --color-page-bg: #0066ff;
   --color-surface: #3385ff;

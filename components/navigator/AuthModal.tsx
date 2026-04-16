@@ -36,7 +36,7 @@ export function AuthModal() {
           ✕
         </button>
         <div className="modal-header-brand">
-          <Image src="/logo.png" alt="Jobbit" width={240} height={48} className="modal-logo-img" />
+          <Image src="/logo.png" alt="jobbit" width={240} height={48} className="modal-logo-img" />
         </div>
         <div className="modal-body">
         <h3 id="auth-modal-title">
@@ -95,7 +95,7 @@ export function AuthModal() {
             </>
           ) : (
             <>
-              New to Jobbit?{" "}
+              New to jobbit?{" "}
               <button type="button" className="nv-inline-link" onClick={() => setAuthMode("signup")}>
                 Create account
               </button>

@@ -7,7 +7,7 @@ import { useCareer } from "./CareerContext";
 
 function NavLogoLink() {
   return (
-    <Link href="/navigator" className="nav-logo" aria-label="Jobbit navigator home">
+    <Link href="/navigator" className="nav-logo" aria-label="jobbit navigator home">
       <Image
         src="/logo.png"
         alt=""
