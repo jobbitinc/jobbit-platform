@@ -9,6 +9,14 @@ type NavigatorPayload = {
   completedSteps: Record<string, boolean>;
 };
 
+class HttpError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
 function readBearerToken(req: Request): string | null {
   const header = req.headers.get("authorization");
   if (!header?.startsWith("Bearer ")) return null;
@@ -18,15 +26,15 @@ function readBearerToken(req: Request): string | null {
 async function getAuthedUserId(req: Request): Promise<string> {
   const token = readBearerToken(req);
   if (!token) {
-    throw new Error("Missing bearer token");
+    throw new HttpError(401, "Missing bearer token");
   }
   const supabase = getSupabaseAdminClient();
   if (!supabase) {
-    throw new Error("Server is missing Supabase environment configuration.");
+    throw new HttpError(503, "Server is missing Supabase environment configuration.");
   }
   const { data, error } = await supabase.auth.getUser(token);
   if (error || !data.user) {
-    throw new Error("Invalid auth session");
+    throw new HttpError(401, "Invalid auth session");
   }
   return data.user.id;
 }
@@ -86,6 +94,9 @@ export async function GET(req: Request) {
         : {};
     return NextResponse.json({ ok: true, data: { answers, matches, completedSteps } });
   } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json({ ok: false, message: error.message }, { status: error.status });
+    }
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ ok: false, message }, { status: 500 });
   }
@@ -114,6 +125,9 @@ export async function PUT(req: Request) {
     if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });
   } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json({ ok: false, message: error.message }, { status: error.status });
+    }
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ ok: false, message }, { status: 500 });
   }

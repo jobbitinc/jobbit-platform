@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useCareer } from "./CareerContext";
 
 export function AuthModal() {
-  const { authOpen, closeAuth, authMode, setAuthMode, login, signup } = useCareer();
+  const { authOpen, closeAuth, authMode, setAuthMode, login, signup, showToast } = useCareer();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -13,8 +13,15 @@ export function AuthModal() {
   if (!authOpen) return null;
 
   const submit = () => {
-    if (!email.trim() || !password) return;
+    if (!email.trim() || !password) {
+      showToast("Enter your email and password to continue.", "error");
+      return;
+    }
     if (authMode === "signup") {
+      if (!name.trim()) {
+        showToast("Please enter your first name.", "error");
+        return;
+      }
       void signup(email.trim(), name.trim(), password);
     } else {
       void login(email.trim(), password);
@@ -44,7 +51,7 @@ export function AuthModal() {
         </h3>
         <p className="modal-sub">
           {authMode === "signup"
-            ? "Create a free account to unlock your full action plan and track your progress."
+            ? "Create a free account to unlock your full action plan and track your progress. After signup, verify your email to continue."
             : "Sign in to access your saved results and action plan."}
         </p>
         <div className="modal-field">

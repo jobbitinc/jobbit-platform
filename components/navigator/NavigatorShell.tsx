@@ -15,8 +15,17 @@ function NavigatorChrome({ children }: { children: React.ReactNode }) {
         {children}
         <AuthModal />
       </div>
-      <div className={`toast${toast ? " show" : ""}`} role="status">
-        {toast ?? ""}
+      <div className={`toast${toast ? " show" : ""}${toast ? ` ${toast.tone}` : ""}`} role="status" aria-live="polite">
+        {toast ? (
+          <>
+            <span className="toast-icon" aria-hidden="true">
+              {toast.tone === "success" ? "✓" : toast.tone === "error" ? "!" : "i"}
+            </span>
+            <span>{toast.message}</span>
+          </>
+        ) : (
+          ""
+        )}
       </div>
       <LoadingOverlay />
     </>

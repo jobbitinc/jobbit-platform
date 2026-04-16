@@ -778,15 +778,55 @@
 
   /* Toast */
   .toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: var(--navy); color: white;
-    padding: 12px 20px; border-radius: 10px;
-    font-size: 14px; display: none;
-    animation: toastIn 0.3s ease;
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    display: none; align-items: center; gap: 10px;
+    min-width: 280px; max-width: min(92vw, 620px);
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-md);
+    animation: toastIn 0.25s ease;
     z-index: 2000;
   }
-  .toast.show { display: block; }
-  @keyframes toastIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .toast.show { display: inline-flex; }
+  .toast.info {
+    background: #eef4ff;
+    color: #1e3a8a;
+    border-color: #bfdbfe;
+  }
+  .toast.success {
+    background: #ecfdf3;
+    color: #065f46;
+    border-color: #a7f3d0;
+  }
+  .toast.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+  .toast .toast-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-family: var(--font-dm-mono), monospace;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid currentColor;
+  }
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
 
   /* Utility */
   .text-center { text-align: center; }
@@ -1012,9 +1052,10 @@
       font-size: 16px;
     }
     .toast {
-      left: 16px;
-      right: 16px;
-      bottom: max(16px, env(safe-area-inset-bottom, 0px));
-      text-align: center;
+      top: max(10px, env(safe-area-inset-top, 0px));
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: min(92vw, 620px);
     }
   }

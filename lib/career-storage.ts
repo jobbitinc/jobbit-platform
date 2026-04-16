@@ -3,6 +3,7 @@ import type { MatchResultSet, QuizAnswers, StoredUser } from "@/lib/career/types
 const KEY_USERS = "jobbit_users_v1";
 const KEY_PENDING = "jobbit_pending_career_v1";
 const KEY_SESSION = "jobbit_session_email_v1";
+const KEY_PENDING_BY_EMAIL = "jobbit_pending_career_by_email_v1";
 
 type CareerBundle = {
   answers: QuizAnswers;
@@ -44,6 +45,49 @@ export function writePendingCareer(bundle: CareerBundle) {
 
 export function clearPendingCareer() {
   sessionStorage.removeItem(KEY_PENDING);
+}
+
+export function writePendingCareerForEmail(email: string, bundle: CareerBundle) {
+  if (typeof window === "undefined") return;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return;
+  try {
+    const raw = localStorage.getItem(KEY_PENDING_BY_EMAIL);
+    const map = raw ? (JSON.parse(raw) as Record<string, CareerBundle>) : {};
+    map[normalized] = bundle;
+    localStorage.setItem(KEY_PENDING_BY_EMAIL, JSON.stringify(map));
+  } catch {
+    // noop
+  }
+}
+
+export function readPendingCareerForEmail(email: string): CareerBundle | null {
+  if (typeof window === "undefined") return null;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return null;
+  try {
+    const raw = localStorage.getItem(KEY_PENDING_BY_EMAIL);
+    if (!raw) return null;
+    const map = JSON.parse(raw) as Record<string, CareerBundle>;
+    return map[normalized] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function clearPendingCareerForEmail(email: string) {
+  if (typeof window === "undefined") return;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return;
+  try {
+    const raw = localStorage.getItem(KEY_PENDING_BY_EMAIL);
+    if (!raw) return;
+    const map = JSON.parse(raw) as Record<string, CareerBundle>;
+    delete map[normalized];
+    localStorage.setItem(KEY_PENDING_BY_EMAIL, JSON.stringify(map));
+  } catch {
+    // noop
+  }
 }
 
 export function getSessionEmail(): string | null {

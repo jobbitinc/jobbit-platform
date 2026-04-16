@@ -13,13 +13,17 @@ import { useRouter } from "next/navigation";
 import type { MatchResultSet, QuizAnswers } from "@/lib/career/types";
 import {
   clearPendingCareer,
+  clearPendingCareerForEmail,
+  readPendingCareerForEmail,
   readPendingCareer,
+  writePendingCareerForEmail,
   writePendingCareer,
 } from "@/lib/career-storage";
 import { toPromptAnswers, validateMatchResultSet } from "@/lib/career/validation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export type SessionUser = { id: string; email: string; name: string };
+type ToastTone = "info" | "success" | "error";
 
 type PersistedNavigatorState = {
   answers: QuizAnswers;
@@ -41,8 +45,8 @@ type CareerContextValue = {
   openAuth: (mode?: "signup" | "login", redirectAfter?: string | null) => void;
   closeAuth: () => void;
   setAuthMode: (m: "signup" | "login") => void;
-  toast: string | null;
-  showToast: (msg: string) => void;
+  toast: { message: string; tone: ToastTone } | null;
+  showToast: (msg: string, tone?: ToastTone) => void;
   completeQuiz: (answers: QuizAnswers) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, name: string, password: string) => Promise<void>;
@@ -64,8 +68,9 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
   const [isMatching, setIsMatching] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; tone: ToastTone } | null>(null);
   const authRedirectRef = useRef<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
 
   const readServerState = useCallback(async (): Promise<PersistedNavigatorState | null> => {
     const supabase = getSupabaseBrowserClient();
@@ -113,9 +118,10 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const showToast = useCallback((msg: string) => {
-    setToast(msg);
-    window.setTimeout(() => setToast(null), 2800);
+  const showToast = useCallback((msg: string, tone: ToastTone = "info") => {
+    setToast({ message: msg, tone });
+    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => setToast(null), 3200);
   }, []);
 
   const hydrateFromStorage = useCallback(() => {
@@ -151,20 +157,23 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
           setCompletedSteps(state.completedSteps);
         } else {
           const pending = readPendingCareer();
-          if (pending) {
-            setAnswers(pending.answers);
-            setMatches(pending.matches);
-            setCompletedSteps(pending.completedSteps ?? {});
+          const pendingByEmail = nextUser.email ? readPendingCareerForEmail(nextUser.email) : null;
+          const resume = pendingByEmail ?? pending;
+          if (resume) {
+            setAnswers(resume.answers);
+            setMatches(resume.matches);
+            setCompletedSteps(resume.completedSteps ?? {});
             await writeServerState({
-              answers: pending.answers,
-              matches: pending.matches,
-              completedSteps: pending.completedSteps ?? {},
+              answers: resume.answers,
+              matches: resume.matches,
+              completedSteps: resume.completedSteps ?? {},
             });
             clearPendingCareer();
+            if (nextUser.email) clearPendingCareerForEmail(nextUser.email);
           }
         }
       } catch {
-        showToast("Could not load your saved navigator data.");
+        showToast("Could not load your saved navigator data.", "error");
       } finally {
         setBootstrapped(true);
       }
@@ -214,7 +223,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         router.push("/navigator/results");
       } catch (error) {
         const message = error instanceof Error ? error.message : "Could not generate matches right now.";
-        showToast(message);
+        showToast(message, "error");
       } finally {
         setIsMatching(false);
       }
@@ -230,9 +239,10 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         password,
       });
       if (error || !data.user) {
-        showToast(error?.message ?? "Invalid email or password.");
+        showToast(error?.message ?? "Invalid email or password.", "error");
         return;
       }
+      const pendingByEmail = data.user.email ? readPendingCareerForEmail(data.user.email) : null;
       setUser({
         id: data.user.id,
         email: data.user.email ?? email.trim(),
@@ -243,9 +253,22 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         setAnswers(state.answers);
         setMatches(state.matches);
         setCompletedSteps(state.completedSteps);
+      } else if (pendingByEmail) {
+        setAnswers(pendingByEmail.answers);
+        setMatches(pendingByEmail.matches);
+        setCompletedSteps(pendingByEmail.completedSteps ?? {});
+        await writeServerState({
+          answers: pendingByEmail.answers,
+          matches: pendingByEmail.matches,
+          completedSteps: pendingByEmail.completedSteps ?? {},
+        });
+        if (data.user.email) clearPendingCareerForEmail(data.user.email);
       }
       setAuthOpen(false);
-      showToast(`Welcome back, ${((data.user.user_metadata?.name as string | undefined) ?? "Friend").trim() || "Friend"}!`);
+      showToast(
+        `Welcome back, ${((data.user.user_metadata?.name as string | undefined) ?? "Friend").trim() || "Friend"}!`,
+        "success",
+      );
       const dest = authRedirectRef.current;
       authRedirectRef.current = null;
       router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
@@ -270,23 +293,33 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         }
       }
       if (!m) {
-        showToast("No quiz results to save. Take the quiz first.");
+        showToast("No quiz results to save. Take the quiz first.", "error");
         return;
       }
       const supabase = getSupabaseBrowserClient();
+      const appUrlRaw =
+        process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+        (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+      const appUrl = appUrlRaw.replace(/\/+$/, "");
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
           data: { name: name.trim() },
+          emailRedirectTo: `${appUrl}/navigator/login?next=/navigator/results`,
         },
       });
       if (error) {
-        showToast(error.message);
+        showToast(error.message, "error");
         return;
       }
       if (!data.session || !data.user) {
-        showToast("Account created. Please verify your email, then sign in.");
+        writePendingCareerForEmail(email.trim(), {
+          answers: a,
+          matches: m,
+          completedSteps: c,
+        });
+        showToast("Account created. Verify your email to unlock quiz results and continue.", "success");
         setAuthOpen(false);
         return;
       }
@@ -298,7 +331,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       });
       clearPendingCareer();
       setAuthOpen(false);
-      showToast(`Welcome, ${name.trim() || "Friend"}!`);
+      showToast(`Welcome, ${name.trim() || "Friend"}!`, "success");
       const dest = authRedirectRef.current;
       authRedirectRef.current = null;
       router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
@@ -313,7 +346,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
     setAnswers({});
     setMatches(null);
     setCompletedSteps({});
-    showToast("Signed out successfully");
+    showToast("Signed out successfully", "success");
     router.push("/navigator");
   }, [router, showToast]);
 
