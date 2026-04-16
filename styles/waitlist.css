@@ -17,7 +17,6 @@
   --white: var(--color-text-heading);
   --muted: rgba(255, 255, 255, 0.72);
   --border: rgba(255, 255, 255, 0.22);
-  --grid: rgba(255, 255, 255, 0.06);
 
   position: relative;
   background: var(--color-page-bg);
@@ -32,20 +31,6 @@
 [data-waitlist-page] *::before,
 [data-waitlist-page] *::after {
   box-sizing: border-box;
-}
-
-[data-waitlist-page]::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px;
 }
 
 [data-waitlist-page] .orb {
@@ -90,9 +75,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 22px 48px;
-  background: rgba(0, 102, 255, 0.88);
+  /* Same blue as page background */
+  background: var(--color-page-bg);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 [data-waitlist-page] .wl-logo-link {
   display: flex;
@@ -100,9 +86,9 @@
   line-height: 0;
 }
 [data-waitlist-page] .wl-logo-img {
-  height: 28px;
+  height: 34px;
   width: auto;
-  max-width: 148px;
+  max-width: 200px;
   object-fit: contain;
 }
 [data-waitlist-page] .nav-tag {
@@ -110,7 +96,7 @@
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 [data-waitlist-page] .hero {
@@ -671,9 +657,9 @@
   align-items: center;
 }
 [data-waitlist-page] .wl-footer-logo-img {
-  height: 22px;
+  height: 34px;
   width: auto;
-  max-width: 120px;
+  max-width: 200px;
   object-fit: contain;
   display: block;
 }

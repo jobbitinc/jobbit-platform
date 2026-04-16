@@ -5,10 +5,10 @@ export function WaitlistFooter() {
   return (
     <footer className="wl-footer">
       <Image
-        src="/jobbit-logo.svg"
+        src="/logo.png"
         alt="Jobbit"
-        width={120}
-        height={22}
+        width={240}
+        height={48}
         className="wl-footer-logo-img"
       />
       <div className="footer-copy">

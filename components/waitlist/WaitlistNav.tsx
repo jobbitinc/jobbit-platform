@@ -5,10 +5,10 @@ export function WaitlistNav() {
     <nav className="wl-nav">
       <a href="/" className="wl-logo-link" aria-label="Jobbit home">
         <Image
-          src="/jobbit-logo.svg"
+          src="/logo.png"
           alt="Jobbit"
-          width={148}
-          height={28}
+          width={240}
+          height={48}
           className="wl-logo-img"
           priority
         />

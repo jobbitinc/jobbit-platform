@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { getFeaturedJobs } from "@/lib/job-dummy-data";
+import { useCareer } from "./CareerContext";
 import { SampleJobsBlock } from "./SampleJobsBlock";
 
 const tradePills = [
@@ -25,6 +26,8 @@ const tradePills = [
 ] as const;
 
 export function NavigatorLanding() {
+  const { openAuth } = useCareer();
+
   return (
     <div className="nav-landing nv-animate-in">
       <div className="hero">
@@ -219,9 +222,14 @@ export function NavigatorLanding() {
       <div className="cta-band">
         <h2>Your $90K career starts with 8 questions.</h2>
         <p>17 trades. Free forever for job seekers. No experience required.</p>
-        <Link href="/navigator/quiz" className="btn-primary">
-          Start the Career Quiz →
-        </Link>
+        <div className="cta-band-actions">
+          <Link href="/navigator/quiz" className="btn-primary">
+            Start the Career Quiz →
+          </Link>
+          <button type="button" className="cta-band-account" onClick={() => openAuth("signup")}>
+            Create free account
+          </button>
+        </div>
       </div>
 
       <footer className="nv-footer">

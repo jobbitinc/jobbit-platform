@@ -9,10 +9,10 @@ function NavLogoLink() {
   return (
     <Link href="/navigator" className="nav-logo" aria-label="Jobbit navigator home">
       <Image
-        src="/jobbit-logo.svg"
+        src="/logo.png"
         alt=""
-        width={132}
-        height={24}
+        width={240}
+        height={48}
         className="nav-logo-img"
         priority
       />
@@ -40,9 +40,9 @@ export function NavigatorNav() {
       <NavLogoLink />
       {pathname === "/navigator" || pathname === "/navigator/" ? (
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <Link href="/navigator/login" style={{ fontSize: 14, color: "var(--text-2)" }}>
+          <button type="button" className="nav-text-link" onClick={() => openAuth("login")}>
             Sign in
-          </Link>
+          </button>
           <Link href="/navigator/quiz" className="nav-cta">
             Start Quiz →
           </Link>
@@ -54,9 +54,14 @@ export function NavigatorNav() {
             Dashboard →
           </Link>
         ) : (
-          <button type="button" className="nav-cta" onClick={() => openAuth("signup")}>
-            Save Results
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <button type="button" className="nav-text-link" onClick={() => openAuth("login")}>
+              Sign in
+            </button>
+            <button type="button" className="nav-cta" onClick={() => openAuth("signup")}>
+              Save Results
+            </button>
+          </div>
         )
       ) : null}
       {pathname === "/navigator/dashboard" ? (

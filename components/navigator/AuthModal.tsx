@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { useCareer } from "./CareerContext";
 
@@ -34,9 +35,10 @@ export function AuthModal() {
         <button type="button" className="modal-close" onClick={closeAuth} aria-label="Close">
           ✕
         </button>
-        <div className="modal-logo">
-          Job<span>bit</span>
+        <div className="modal-header-brand">
+          <Image src="/logo.png" alt="Jobbit" width={240} height={48} className="modal-logo-img" />
         </div>
+        <div className="modal-body">
         <h3 id="auth-modal-title">
           {authMode === "signup" ? "Save your results" : "Welcome back"}
         </h3>
@@ -100,6 +102,7 @@ export function AuthModal() {
             </>
           )}
         </p>
+        </div>
       </div>
     </div>
   );

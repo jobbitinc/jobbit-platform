@@ -25,7 +25,9 @@ export function DashboardPageClient() {
     }
   }, [bootstrapped, matches, router, user]);
 
-  if (!bootstrapped || !user || !matches) {
+  const enriched = useMemo(() => (matches ? enrichMatchesWithJobs(matches) : null), [matches]);
+
+  if (!bootstrapped || !user || !matches || !enriched) {
     return (
       <div className="nav-page-dashboard nv-animate-in">
         <div className="dashboard-wrap">
@@ -34,8 +36,6 @@ export function DashboardPageClient() {
       </div>
     );
   }
-
-  const enriched = useMemo(() => enrichMatchesWithJobs(matches), [matches]);
   const totalSteps = enriched.matches.reduce((sum, m) => sum + m.actionPlan.length, 0);
   const completedCount = Object.values(completedSteps).filter(Boolean).length;
   const match = enriched.matches[activeTradeTab];

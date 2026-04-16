@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -37,7 +38,7 @@ type CareerContextValue = {
   isMatching: boolean;
   authOpen: boolean;
   authMode: "signup" | "login";
-  openAuth: (mode?: "signup" | "login") => void;
+  openAuth: (mode?: "signup" | "login", redirectAfter?: string | null) => void;
   closeAuth: () => void;
   setAuthMode: (m: "signup" | "login") => void;
   toast: string | null;
@@ -64,6 +65,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
   const [toast, setToast] = useState<string | null>(null);
+  const authRedirectRef = useRef<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -148,7 +150,9 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       }
       setAuthOpen(false);
       showToast(`Welcome back, ${res.user.name}!`);
-      router.push("/navigator/dashboard");
+      const dest = authRedirectRef.current;
+      authRedirectRef.current = null;
+      router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
     },
     [router, showToast],
   );
@@ -186,7 +190,9 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       setUser({ email: u.email, name: u.name });
       setAuthOpen(false);
       showToast(`Welcome, ${u.name}!`);
-      router.push("/navigator/dashboard");
+      const dest = authRedirectRef.current;
+      authRedirectRef.current = null;
+      router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
     },
     [answers, completedSteps, matches, router, showToast],
   );
@@ -215,12 +221,18 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
     [answers, matches, persistBundle],
   );
 
-  const openAuth = useCallback((mode: "signup" | "login" = "signup") => {
+  const openAuth = useCallback((mode: "signup" | "login" = "signup", redirectAfter?: string | null) => {
     setAuthMode(mode);
+    const safe =
+      redirectAfter && redirectAfter.trim().length > 0 && redirectAfter.startsWith("/") ? redirectAfter : null;
+    authRedirectRef.current = safe;
     setAuthOpen(true);
   }, []);
 
-  const closeAuth = useCallback(() => setAuthOpen(false), []);
+  const closeAuth = useCallback(() => {
+    authRedirectRef.current = null;
+    setAuthOpen(false);
+  }, []);
 
   const value = useMemo<CareerContextValue>(
     () => ({
@@ -258,6 +270,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       authMode,
       openAuth,
       closeAuth,
+      setAuthMode,
       toast,
       showToast,
       completeQuiz,
