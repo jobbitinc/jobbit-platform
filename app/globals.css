@@ -2,8 +2,17 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+}
+
+/* Avoid accidental horizontal scroll on narrow viewports */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
 }

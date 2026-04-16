@@ -37,6 +37,8 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   [data-navigator] .nv-inline-link {
@@ -276,6 +278,7 @@
     gap: 24px; text-align: center;
   }
   @media (max-width: 768px) { .stats-inner { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 420px) { .stats-inner { grid-template-columns: 1fr; } }
   .stat-num {
     font-family: var(--font-dm-serif), serif;
     font-size: 36px; color: white;
@@ -897,4 +900,121 @@
     color: var(--text-3);
     margin: 0;
     line-height: 1.45;
+  }
+
+  /* ── Responsive (mobile-first fixes) ── */
+  @media (max-width: 640px) {
+    [data-navigator] nav.nv-nav {
+      height: auto;
+      min-height: 56px;
+      padding: 10px 14px;
+      padding-top: max(10px, env(safe-area-inset-top, 0px));
+      padding-left: max(14px, env(safe-area-inset-left, 0px));
+      padding-right: max(14px, env(safe-area-inset-right, 0px));
+      row-gap: 10px;
+      flex-wrap: wrap;
+    }
+    [data-navigator] nav.nv-nav .nav-cta,
+    [data-navigator] nav.nv-nav a.nav-cta,
+    [data-navigator] nav.nv-nav button.nav-cta {
+      min-height: 44px;
+      padding: 10px 16px;
+    }
+    [data-navigator] nav.nv-nav .nav-text-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .section {
+      padding: 48px 18px;
+    }
+    .stats-strip {
+      padding: 28px 16px;
+    }
+    .cta-band {
+      padding: 56px 18px;
+    }
+    .quiz-wrap {
+      padding: 28px 16px 64px;
+    }
+    .quiz-progress-bar {
+      margin-bottom: 32px;
+    }
+    .results-wrap {
+      padding: 24px 16px 64px;
+    }
+    .results-header {
+      padding: 24px 18px;
+    }
+    .trade-card-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .readiness-badge {
+      text-align: left;
+    }
+    .trade-card-body {
+      padding: 20px 18px;
+    }
+    .action-teaser {
+      padding: 18px 18px;
+    }
+    .lock-banner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .dashboard-wrap {
+      padding: 28px 16px 64px;
+    }
+    .dash-header {
+      padding: 24px 20px;
+    }
+    .dash-title {
+      font-size: clamp(22px, 6vw, 28px);
+    }
+    .plan-trade-tab {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      gap: 8px;
+      scrollbar-width: thin;
+    }
+    .plan-tab {
+      flex-shrink: 0;
+    }
+    .apc-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .modal-overlay.open {
+      align-items: flex-start;
+      padding: 16px;
+      padding-top: max(20px, env(safe-area-inset-top, 0px));
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal {
+      margin: 0 auto 24px;
+    }
+    .modal-body {
+      padding: 22px 20px 28px;
+    }
+    .modal-header-brand {
+      padding: 18px 48px 18px 18px;
+    }
+    .modal-field input {
+      font-size: 16px;
+    }
+    .toast {
+      left: 16px;
+      right: 16px;
+      bottom: max(16px, env(safe-area-inset-bottom, 0px));
+      text-align: center;
+    }
   }
