@@ -70,7 +70,7 @@ export function WaitlistHero() {
         transition={{ duration: 0.52, ease: easeSmooth }}
       >
         <span className="counter-dot" />
-        <span className="counter-text">Launching May 1</span>
+        <span className="counter-text">Waitlist Open Now</span>
       </motion.div>
 
       <motion.div
@@ -101,7 +101,7 @@ export function WaitlistHero() {
         transition={{ duration: 0.58, delay: 0.62, ease: easeSmooth }}
       >
         Jobbit is a personalized AI Career Coach that matches High School students and Out of School Youth
-        with the Skilled Trades.
+        with the Skilled Trades
       </motion.p>
 
       <motion.div
