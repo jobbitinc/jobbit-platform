@@ -72,9 +72,9 @@
   right: 0;
   z-index: 100;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 12px 20px;
   flex-wrap: wrap;
   padding: 22px 48px;
   padding-top: max(22px, env(safe-area-inset-top, 0px));
@@ -95,6 +95,27 @@
   width: auto;
   max-width: 200px;
   object-fit: contain;
+}
+[data-waitlist-page] .wl-nav-tagline {
+  margin: 0;
+  margin-left: auto;
+  text-align: right;
+  max-width: min(340px, 55vw);
+  line-height: 1.5;
+}
+@media (max-width: 480px) {
+  [data-waitlist-page] .wl-nav-tagline {
+    width: 100%;
+    max-width: none;
+    text-align: left;
+    order: 3;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin-top: 4px;
+  }
+  [data-waitlist-page] nav.wl-nav {
+    align-items: flex-start;
+  }
 }
 [data-waitlist-page] .nav-tag {
   font-family: var(--font-dm-mono), monospace;
@@ -192,7 +213,7 @@
   font-weight: 300;
   line-height: 1.75;
   color: rgba(255, 255, 255, 0.82);
-  max-width: 560px;
+  max-width: 640px;
   margin: 0 auto 52px;
 }
 
