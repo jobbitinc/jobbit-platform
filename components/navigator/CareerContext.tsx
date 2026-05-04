@@ -21,6 +21,7 @@ import {
 } from "@/lib/career-storage";
 import { toPromptAnswers, validateMatchResultSet } from "@/lib/career/validation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { getAuthEmailRedirectOrigin } from "@/lib/site";
 
 export type SessionUser = { id: string; email: string; name: string };
 type ToastTone = "info" | "success" | "error";
@@ -297,10 +298,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       const supabase = getSupabaseBrowserClient();
-      const appUrlRaw =
-        process.env.NEXT_PUBLIC_APP_URL?.trim() ||
-        (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
-      const appUrl = appUrlRaw.replace(/\/+$/, "");
+      const appUrl = getAuthEmailRedirectOrigin();
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
