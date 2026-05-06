@@ -9,6 +9,8 @@ export function AuthModal() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
+  const [location, setLocation] = useState("");
 
   if (!authOpen) return null;
 
@@ -22,7 +24,11 @@ export function AuthModal() {
         showToast("Please enter your first name.", "error");
         return;
       }
-      void signup(email.trim(), name.trim(), password);
+      if (!age.trim() || !location.trim()) {
+        showToast("Please enter your age and location.", "error");
+        return;
+      }
+      void signup(email.trim(), name.trim(), password, { age, location });
     } else {
       void login(email.trim(), password);
     }
@@ -75,6 +81,34 @@ export function AuthModal() {
               placeholder="Your first name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        ) : null}
+        {authMode === "signup" ? (
+          <div className="modal-field">
+            <label htmlFor="auth-age">Age</label>
+            <input
+              id="auth-age"
+              type="number"
+              min={10}
+              max={100}
+              inputMode="numeric"
+              placeholder="e.g. 17"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+          </div>
+        ) : null}
+        {authMode === "signup" ? (
+          <div className="modal-field">
+            <label htmlFor="auth-location">Location</label>
+            <input
+              id="auth-location"
+              type="text"
+              autoComplete="address-level2"
+              placeholder="City, State"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
             />
           </div>
         ) : null}

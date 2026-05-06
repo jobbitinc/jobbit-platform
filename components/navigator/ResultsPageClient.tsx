@@ -105,6 +105,9 @@ export function ResultsPageClient() {
     return () => clearTimeout(t);
   }, [matches]);
 
+  const anonymous = !user;
+  const enriched = useMemo(() => (matches ? enrichMatchesWithJobs(matches) : null), [matches]);
+
   if (!bootstrapped || !matches) {
     return (
       <div className="nav-page-results nv-animate-in">
@@ -114,9 +117,6 @@ export function ResultsPageClient() {
       </div>
     );
   }
-
-  const anonymous = !user;
-  const enriched = useMemo(() => enrichMatchesWithJobs(matches), [matches]);
 
   return (
     <div className="nav-page-results nv-animate-in">

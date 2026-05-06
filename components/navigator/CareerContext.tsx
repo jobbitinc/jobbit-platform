@@ -50,7 +50,12 @@ type CareerContextValue = {
   showToast: (msg: string, tone?: ToastTone) => void;
   completeQuiz: (answers: QuizAnswers) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, name: string, password: string) => Promise<void>;
+  signup: (
+    email: string,
+    name: string,
+    password: string,
+    demographics?: { age?: string; location?: string },
+  ) => Promise<void>;
   logout: () => Promise<void>;
   toggleStep: (key: string) => void;
   hydrateFromStorage: () => void;
@@ -278,7 +283,12 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signup = useCallback(
-    async (email: string, name: string, password: string) => {
+    async (
+      email: string,
+      name: string,
+      password: string,
+      demographics?: { age?: string; location?: string },
+    ) => {
       let m = matches;
       let a = answers;
       let c = completedSteps;
@@ -299,11 +309,17 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       }
       const supabase = getSupabaseBrowserClient();
       const appUrl = getAuthEmailRedirectOrigin();
+      const age = demographics?.age?.trim() ?? "";
+      const location = demographics?.location?.trim() ?? "";
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
-          data: { name: name.trim() },
+          data: {
+            name: name.trim(),
+            ...(age ? { age } : {}),
+            ...(location ? { location } : {}),
+          },
           emailRedirectTo: `${appUrl}/navigator/login?next=/navigator/results`,
         },
       });
