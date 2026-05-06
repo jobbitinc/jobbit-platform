@@ -7,7 +7,7 @@ const messages = [
   "Analyzing your work style...",
   "Matching you to the best trades...",
   "Calculating readiness scores...",
-  "Building your action plans...",
+  "Building your action plan...",
   "Almost ready...",
 ];
 

@@ -34,15 +34,12 @@ export function NavigatorLanding() {
         <div className="hero-content">
           <div className="hero-tag">AI Career Navigator</div>
           <h1>
-            Find your <em>career</em> in the skilled trades.
+            Find your <em>career</em> in the skilled trades
           </h1>
           <p className="hero-sub">
-            Answer 8 quick questions. Get matched to your top 3 trade careers — with salaries, action plans, and everything you need to get started. Free, always.
+            Answer 8 quick questions. Get matched to your top 3 trade careers — with salaries, action plan, and everything you need to get started.
           </p>
           <div className="hero-actions">
-            <Link href="/navigator/quiz" className="btn-primary">
-              Take the Career Quiz →
-            </Link>
             <button
               type="button"
               className="btn-secondary"
@@ -50,6 +47,9 @@ export function NavigatorLanding() {
             >
               How it works
             </button>
+            <Link href="/navigator/quiz" className="btn-primary">
+              Take the Career Quiz →
+            </Link>
           </div>
           <div className="hero-social">
             <div className="hero-avatars">
@@ -58,7 +58,6 @@ export function NavigatorLanding() {
               <span>👩🏽</span>
               <span>👦🏿</span>
             </div>
-            <span>247+ young people on the waitlist</span>
           </div>
         </div>
         <div className="hero-visual">
@@ -66,7 +65,7 @@ export function NavigatorLanding() {
             <div className="hv-dot" style={{ background: "#FF5F57" }} />
             <div className="hv-dot" style={{ background: "#FFBD2E" }} />
             <div className="hv-dot" style={{ background: "#28CA41" }} />
-            <span className="hv-header-title">jobbit.com — your results</span>
+            <span className="hv-header-title">jobbitapp.com — your results</span>
           </div>
           <div className="hv-body">
             <div
@@ -179,18 +178,18 @@ export function NavigatorLanding() {
 
       <section className="section" id="how-it-works">
         <div className="section-tag">How it works</div>
-        <h2 className="section-title">From quiz to career in minutes.</h2>
+        <h2 className="section-title">From quiz to career in minutes</h2>
         <p className="section-sub">
-          No resume, no experience, no idea where to start? That&apos;s exactly who jobbit is built for.
+          No resume, no experience, no idea where to start? no worries- Jobbit was created for you.
         </p>
         <div className="steps-grid">
           {[
             { num: "01", icon: "🎯", title: "Take the Quiz", desc: "8 questions about your work style, environment, strengths, and goals. No wrong answers — just honest ones." },
             { num: "02", icon: "⚡", title: "Get Matched", desc: "Our AI matches you to your top 3 trades, shows you why, your readiness score, and what skills to build." },
             { num: "03", icon: "🗺️", title: "Follow Your Plan", desc: "Every match comes with a step-by-step action plan. Certs, timelines, costs — specific to you." },
-            { num: "04", icon: "📊", title: "Track Progress", desc: "Save your results, check off milestones, and come back anytime. Your career journey, organised." },
+            { num: "04", icon: "📊", title: "Track Progress", desc: "Save your results, check off milestones, and come back anytime. Your career journey, organized." },
             { num: "05", icon: "🤝", title: "Connect & Apply", desc: "We connect you directly to apprenticeship programs, unions, and training providers near you." },
-            { num: "06", icon: "💰", title: "Start Earning", desc: "Apprentices earn while they learn. No student debt. A $60K–$120K career starts here." },
+            { num: "06", icon: "💰", title: "Start Earning", desc: "Apprentices earn while they learn. A $60K–$120K career starts here." },
           ].map((s) => (
             <div className="step-card" key={s.title}>
               <div className="step-num">{s.num}</div>
@@ -204,9 +203,8 @@ export function NavigatorLanding() {
 
       <div className="bg-surface">
         <div className="section">
-          <div className="section-tag">Trades we cover</div>
+          <div className="section-tag">Your Pathway to Skilled Trades</div>
           <h2 className="section-title">Seventeen careers. Zero college debt.</h2>
-          <p className="section-sub">High pay, high demand, and a real future — without a four-year degree.</p>
           <div className="trades-grid">
             {tradePills.map(([icon, name, salary]) => (
               <div className="trade-pill" key={name}>
@@ -220,8 +218,8 @@ export function NavigatorLanding() {
       </div>
 
       <div className="cta-band">
-        <h2>Your $90K career starts with 8 questions.</h2>
-        <p>17 trades. Free forever for job seekers. No experience required.</p>
+        <h2>Your Future Starts with Eight Questions</h2>
+        <p>Join Jobbit-Find your Trade</p>
         <div className="cta-band-actions">
           <Link href="/navigator/quiz" className="btn-primary">
             Start the Career Quiz →
@@ -233,7 +231,7 @@ export function NavigatorLanding() {
       </div>
 
       <footer className="nv-footer">
-        © 2025 jobbit Inc. · AI Career Navigator for the Skilled Trades · Free for students, always. ·{" "}
+        © 2025 jobbit Inc. · AI Career Navigator for the Skilled Trades · Free for students. ·{" "}
         <Link href="/" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline" }}>
           Join the waitlist
         </Link>
