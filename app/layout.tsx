@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, DM_Mono, DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Barlow_Condensed, Bebas_Neue, DM_Mono, DM_Sans, DM_Serif_Display } from "next/font/google";
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-barlow",
+  display: "swap",
+});
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -55,7 +62,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bebasNeue.variable} ${dmSans.variable} ${dmMono.variable} ${dmSerif.variable} h-full antialiased`}
+      className={`${barlowCondensed.variable} ${bebasNeue.variable} ${dmSans.variable} ${dmMono.variable} ${dmSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>

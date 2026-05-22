@@ -1,9 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { getRawQuizSlugs } from "@/lib/quiz-prompt";
 import {
   type PromptQuizAnswers,
+  toPromptAnswers,
   validateMatchResultSet,
-  validatePromptQuizAnswers,
+  validateQuizAnswers,
 } from "@/lib/career/validation";
 
 const MODEL = "claude-sonnet-4-6";
@@ -14,15 +16,37 @@ Your role is to analyze a user's quiz answers and return the top 3 skilled trade
 
 Return ONLY valid JSON. No preamble, no explanation, no markdown formatting, no code blocks. Raw JSON only.`;
 
-function buildUserPrompt(answers: PromptQuizAnswers): string {
-  return `A young person completed Jobbit's 6-question career quiz. Here are their answers:
+function urgencyMatchingNote(urgency: string): string {
+  switch (urgency) {
+    case "right-now":
+      return 'Income urgency is "right-now": surface ONLY trades with certifications achievable in under 90 days. Action plan steps must emphasize fast certs (e.g. OSHA-10, short pre-apprenticeship) before long apprenticeships.';
+    case "within-6-months":
+      return 'Income urgency is "within-6-months": favor trades with entry paths under 6 months; keep action plan fast-moving.';
+    case "train-1-2-years":
+      return 'Income urgency is "train-1-2-years": include 1–2 year certificate or pre-apprenticeship pathways.';
+    case "planning-ahead":
+      return 'Income urgency is "planning-ahead": include full registered apprenticeship pathways (2+ years) and union programs where appropriate.';
+    default:
+      return "";
+  }
+}
 
-- Work style preference: ${answers.workStyle}
+function buildUserPrompt(answers: PromptQuizAnswers, slugs: ReturnType<typeof getRawQuizSlugs>): string {
+  const urgencyNote = urgencyMatchingNote(slugs.urgency);
+  return `A young person completed Jobbit's 7-question career quiz. Here are their answers:
+
+- Work day preference: ${answers.workStyle}
 - Work environment preference: ${answers.environment}
-- Top natural strength: ${answers.strength}
-- Income urgency: ${answers.urgency}
+- Current strength / learning profile: ${answers.strength}
+- workCategory: ${slugs.workCategory}
+- incomeGoal: ${answers.income}
+- incomeUrgency: ${answers.urgency}
 - Physical comfort level: ${answers.physical}
-- 5-year income goal: ${answers.income}
+
+Matching constraints (required):
+- workCategory must narrow the trade pool: electrical-technical, mechanical-structural, environment-outdoors, or creative-craft.
+- incomeGoal is the user's 5-year target range only (e.g. $60K–$80K). Higher ranges ($80K–$100K, $100K+) favor union apprenticeships and licensed trades; lower ranges favor faster-entry trades with growth potential.
+- ${urgencyNote}
 
 Available trades to match from: Electrician, Plumber, HVAC Technician, Welder, Carpenter, Construction Manager, Heavy Equipment Operator, Pipefitter, Ironworker, Sheet Metal Worker, Elevator Mechanic, Boilermaker, Solar Installer, Wind Turbine Technician, Industrial Maintenance Mechanic, Brick/Stonemason, Cosmetologist
 
@@ -85,15 +109,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    const rawBody = (await req.json()) as { answers?: unknown };
-    const promptAnswers = validatePromptQuizAnswers(rawBody.answers);
+    const rawBody = (await req.json()) as { answers?: unknown; quizAnswers?: unknown };
+    const quizAnswers = validateQuizAnswers(rawBody.quizAnswers ?? rawBody.answers);
+    const promptAnswers = toPromptAnswers(quizAnswers);
+    const slugs = getRawQuizSlugs(quizAnswers);
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 6000,
       temperature: 0.3,
       system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: buildUserPrompt(promptAnswers) }],
+      messages: [{ role: "user", content: buildUserPrompt(promptAnswers, slugs) }],
     });
 
     const textBlock = response.content.find((part) => part.type === "text");

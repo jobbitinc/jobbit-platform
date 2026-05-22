@@ -1,5 +1,6 @@
 import type { MatchResultSet, QuizAnswers } from "@/lib/career/types";
 import { getJobsForTrade } from "@/lib/job-dummy-data";
+import { quizQuestions } from "@/lib/quiz-data";
 
 const defaultSkillGaps = ["OSHA safety awareness", "Trade math & measurements", "Application & interview readiness"];
 
@@ -27,15 +28,38 @@ function skillGapsFor(tradeName: string): string[] {
   return skillGapsByTrade[tradeName] ?? defaultSkillGaps;
 }
 
-const tradeMap: Record<
-  string,
-  { primary: string; secondary: string; tertiary: string }
-> = {
-  build: { primary: "Carpenter", secondary: "Ironworker", tertiary: "Brick/Stonemason" },
-  fix: { primary: "Electrician", secondary: "HVAC Technician", tertiary: "Industrial Maintenance Mechanic" },
-  install: { primary: "Electrician", secondary: "Solar Installer", tertiary: "HVAC Technician" },
-  manage: { primary: "Construction Manager", secondary: "Elevator Mechanic", tertiary: "Heavy Equipment Operator" },
+const categoryMap: Record<string, { primary: string; secondary: string; tertiary: string }> = {
+  "electrical-technical": {
+    primary: "Electrician",
+    secondary: "HVAC Technician",
+    tertiary: "Elevator Mechanic",
+  },
+  "mechanical-structural": {
+    primary: "Pipefitter",
+    secondary: "Welder",
+    tertiary: "Heavy Equipment Operator",
+  },
+  "environment-outdoors": {
+    primary: "Solar Installer",
+    secondary: "Wind Turbine Technician",
+    tertiary: "Ironworker",
+  },
+  "creative-craft": {
+    primary: "Cosmetologist",
+    secondary: "Carpenter",
+    tertiary: "Sheet Metal Worker",
+  },
 };
+
+const workStyleMap: Record<string, { primary: string; secondary: string; tertiary: string }> = {
+  "build-fix-hands": { primary: "Carpenter", secondary: "Welder", tertiary: "Brick/Stonemason" },
+  "team-job-site": { primary: "Construction Manager", secondary: "Ironworker", tertiary: "Carpenter" },
+  "solve-problems": { primary: "Electrician", secondary: "Industrial Maintenance Mechanic", tertiary: "HVAC Technician" },
+  "outdoors-mobile": { primary: "Solar Installer", secondary: "Wind Turbine Technician", tertiary: "Heavy Equipment Operator" },
+};
+
+/** Fast-entry trades for users who need income immediately (<90 day certs). */
+const fastEntryTrades = new Set(["Solar Installer", "Cosmetologist", "HVAC Technician", "Welder"]);
 
 const tradeDetails: Record<string, { emoji: string; salary: string; score: number }> = {
   Electrician: { emoji: "⚡", salary: "$75K – $120K", score: 89 },
@@ -57,90 +81,123 @@ const tradeDetails: Record<string, { emoji: string; salary: string; score: numbe
   Cosmetologist: { emoji: "✂️", salary: "$35K – $75K", score: 70 },
 };
 
+function optionLabel(questionId: string, value: string): string {
+  const question = quizQuestions.find((q) => q.id === questionId);
+  const option = question?.options.find((o) => o.value === value);
+  return option?.label ?? value;
+}
+
+function pickTrades(answers: QuizAnswers): [string, string, string] {
+  const category = answers.workCategory ?? "electrical-technical";
+  const base = categoryMap[category] ?? categoryMap["electrical-technical"];
+  let list: [string, string, string] = [base.primary, base.secondary, base.tertiary];
+
+  if (answers.urgency === "right-now") {
+    list = list.map((t) => (fastEntryTrades.has(t) ? t : "HVAC Technician")) as [string, string, string];
+    if (!fastEntryTrades.has(list[0])) list[0] = "Solar Installer";
+  }
+
+  if (answers.urgency === "planning-ahead") {
+    const style = workStyleMap[answers.workStyle ?? ""];
+    if (style) list = [style.primary, style.secondary, style.tertiary];
+    if (!list.includes("Elevator Mechanic") && category === "electrical-technical") {
+      list[2] = "Elevator Mechanic";
+    }
+  }
+
+  return list;
+}
+
+function actionPlanFor(tradeName: string, urgency: string) {
+  const fastPath = urgency === "right-now" || urgency === "within-6-months";
+  const step1 = fastPath
+    ? {
+        title: "Complete OSHA-10 and any trade-specific short cert",
+        detail:
+          "Prioritize certifications you can finish in under 90 days (OSHA-10, employer safety orientations, or state pre-apprenticeship cards) before committing to a multi-year apprenticeship.",
+      }
+    : {
+        title: `Research ${tradeName} registered apprenticeship programs`,
+        detail: `Visit apprenticeship.gov and your local union hall to find registered ${tradeName} apprenticeships in your area.`,
+      };
+
+  return [
+    {
+      step: 1,
+      title: step1.title,
+      detail: step1.detail,
+      timeEstimate: fastPath ? "1–2 weeks" : "1–2 days",
+      cost: fastPath ? "$25–$150" : "$0",
+      priority: "First",
+    },
+    {
+      step: 2,
+      title: fastPath ? `Find ${tradeName} helper or pre-apprenticeship roles` : "Complete OSHA-10 General Industry certification",
+      detail: fastPath
+        ? "Search local contractors, workforce boards, and pre-apprenticeship programs for paid or stipend roles while you build hours."
+        : "OSHA-10 is required or strongly preferred for most apprenticeship applications. Online courses available through OSHA.gov.",
+      timeEstimate: fastPath ? "2–4 weeks" : "1–2 days",
+      cost: fastPath ? "$0" : "$25–$75",
+      priority: "First",
+    },
+    {
+      step: 3,
+      title: "Gather application documents",
+      detail:
+        "You'll need: high school diploma or GED, valid ID, drug test results, and often a physical exam. Start collecting these now.",
+      timeEstimate: "1 week",
+      cost: "$50–$150",
+      priority: "Next",
+    },
+    {
+      step: 4,
+      title: "Contact your local union hall or training center",
+      detail: `Find your local trade chapter and attend an information session. Relationships matter for ${tradeName} pathways.`,
+      timeEstimate: "1–2 weeks",
+      cost: "$0",
+      priority: "Next",
+    },
+    {
+      step: 5,
+      title: "Submit your apprenticeship or training application",
+      detail:
+        "Most programs have application windows. Submit when the window opens — competition is real but manageable with preparation.",
+      timeEstimate: "1 day",
+      cost: "$0–$25",
+      priority: "Then",
+    },
+    {
+      step: 6,
+      title: "Prepare for the aptitude test",
+      detail:
+        "Most apprenticeship programs require a basic math and reading aptitude test. Practice algebra, fractions, and basic reading comprehension.",
+      timeEstimate: "2–4 weeks",
+      cost: "$0",
+      priority: "Then",
+    },
+  ];
+}
+
 export function generateFallbackResults(answers: QuizAnswers): MatchResultSet {
-  const style = answers.workStyle || "fix";
-  const trades = tradeMap[style] || tradeMap.fix;
-  const tradesList = [trades.primary, trades.secondary, trades.tertiary];
+  const tradesList = pickTrades(answers);
+  const workLabel = optionLabel("workStyle", answers.workStyle ?? "");
+  const incomeGoal = answers.income ?? "$60K–$80K";
+  const urgency = answers.urgency ?? "within-6-months";
 
   return {
     matches: tradesList.map((tradeName, i) => {
       const details = tradeDetails[tradeName];
-      const env = answers.environment ?? "both";
-      const envLabel =
-        env === "both" ? "flexible work environment" : `${String(env)} environment`;
+      const envLabel = optionLabel("environment", answers.environment ?? "");
       return {
         rank: i + 1,
         trade: tradeName,
         emoji: details.emoji,
         matchScore: details.score - i * 6,
         salaryRange: details.salary,
-        whyMatch: `Based on your preference for ${
-          answers.workStyle === "fix"
-            ? "fixing and solving problems"
-            : answers.workStyle === "build"
-              ? "building and creating"
-              : answers.workStyle === "install"
-                ? "installing and connecting systems"
-                : "planning and leading"
-        }, ${tradeName} is a strong fit. Your stated income goal aligns well with typical ${tradeName} career trajectories, and the ${envLabel} matches how ${tradeName}s typically work.`,
+        whyMatch: `Your ${workLabel.toLowerCase()} day preference and ${answers.workCategory ?? "trade"} focus point strongly toward ${tradeName}. Your income goal of ${incomeGoal} and preference for ${envLabel.toLowerCase()} align with how ${tradeName}s typically build their careers.`,
         skillGaps: skillGapsFor(tradeName),
         sampleJobs: getJobsForTrade(tradeName),
-        actionPlan: [
-          {
-            step: 1,
-            title: `Research ${tradeName} apprenticeship programs near you`,
-            detail: `Visit apprenticeship.gov and your local union hall to find registered ${tradeName} apprenticeships in your area.`,
-            timeEstimate: "1–2 days",
-            cost: "$0",
-            priority: "First",
-          },
-          {
-            step: 2,
-            title: "Complete OSHA-10 General Industry certification",
-            detail:
-              "OSHA-10 is required or strongly preferred for most apprenticeship applications. Online courses available through OSHA.gov.",
-            timeEstimate: "1–2 days",
-            cost: "$25–$75",
-            priority: "First",
-          },
-          {
-            step: 3,
-            title: "Gather application documents",
-            detail:
-              "You'll need: high school diploma or GED, valid ID, drug test results, and often a physical exam. Start collecting these now.",
-            timeEstimate: "1 week",
-            cost: "$50–$150",
-            priority: "Next",
-          },
-          {
-            step: 4,
-            title: "Contact your local union hall",
-            detail: `Find your local ${
-              tradeName.includes("Electrician") ? "IBEW" : tradeName.includes("Plumber") ? "UA" : "trade union"
-            } chapter and attend an information session. Relationships matter here.`,
-            timeEstimate: "1–2 weeks",
-            cost: "$0",
-            priority: "Next",
-          },
-          {
-            step: 5,
-            title: "Submit your apprenticeship application",
-            detail:
-              "Most programs have application windows. Submit when the window opens — competition is real but manageable with preparation.",
-            timeEstimate: "1 day",
-            cost: "$0–$25",
-            priority: "Then",
-          },
-          {
-            step: 6,
-            title: "Prepare for the aptitude test",
-            detail:
-              "Most apprenticeship programs require a basic math and reading aptitude test. Practice algebra, fractions, and basic reading comprehension.",
-            timeEstimate: "2–4 weeks",
-            cost: "$0",
-            priority: "Then",
-          },
-        ],
+        actionPlan: actionPlanFor(tradeName, urgency),
       };
     }),
   };

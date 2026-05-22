@@ -457,7 +457,17 @@
 
   .quiz-nav {
     display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
     margin-top: 32px;
+  }
+  .quiz-nav .quiz-back-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .quiz-nav .quiz-final-cta {
+    flex: 1;
+    width: auto;
+    margin-top: 0;
   }
 
   /* ── RESULTS PAGE ── */
@@ -922,7 +932,7 @@
   [data-navigator] .job-sample-role {
     font-size: 15px;
     font-weight: 600;
-    color: var(--navy);
+    color: var(--text);
     margin-bottom: 6px;
     line-height: 1.35;
   }

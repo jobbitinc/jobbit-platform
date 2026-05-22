@@ -5,18 +5,17 @@ import { useState } from "react";
 import { useCareer } from "./CareerContext";
 
 export function AuthModal() {
-  const { authOpen, closeAuth, authMode, setAuthMode, login, signup, showToast } = useCareer();
+  const { authOpen, closeAuth, authMode, setAuthMode, login, requestLoginLink, signup, showToast } = useCareer();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [age, setAge] = useState("");
-  const [location, setLocation] = useState("");
+  const [usePassword, setUsePassword] = useState(false);
 
   if (!authOpen) return null;
 
   const submit = () => {
-    if (!email.trim() || !password) {
-      showToast("Enter your email and password to continue.", "error");
+    if (!email.trim()) {
+      showToast("Enter your email to continue.", "error");
       return;
     }
     if (authMode === "signup") {
@@ -24,13 +23,17 @@ export function AuthModal() {
         showToast("Please enter your first name.", "error");
         return;
       }
-      if (!age.trim() || !location.trim()) {
-        showToast("Please enter your age and location.", "error");
+      void signup(email.trim(), name.trim());
+      return;
+    }
+    if (usePassword) {
+      if (!password) {
+        showToast("Enter your password to sign in.", "error");
         return;
       }
-      void signup(email.trim(), name.trim(), password, { age, location });
-    } else {
       void login(email.trim(), password);
+    } else {
+      void requestLoginLink(email.trim());
     }
   };
 
@@ -52,97 +55,88 @@ export function AuthModal() {
           <Image src="/logo.png" alt="jobbit" width={240} height={48} className="modal-logo-img" />
         </div>
         <div className="modal-body">
-        <h3 id="auth-modal-title">
-          {authMode === "signup" ? "Save your results" : "Welcome back"}
-        </h3>
-        <p className="modal-sub">
-          {authMode === "signup"
-            ? "Create a free account to unlock your full action plan and track your progress. After signup, verify your email to continue."
-            : "Sign in to access your saved results and action plan."}
-        </p>
-        <div className="modal-field">
-          <label htmlFor="auth-email">Email address</label>
-          <input
-            id="auth-email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        {authMode === "signup" ? (
+          <h3 id="auth-modal-title">
+            {authMode === "signup" ? "Unlock your action plan" : "Welcome back"}
+          </h3>
+          <p className="modal-sub">
+            {authMode === "signup"
+              ? "Enter your first name and email. We will send a verification link — no password needed now."
+              : usePassword
+                ? "Sign in with your email and password."
+                : "We will email you a one-click sign-in link."}
+          </p>
           <div className="modal-field">
-            <label htmlFor="auth-name">First name</label>
+            <label htmlFor="auth-email">Email address</label>
             <input
-              id="auth-name"
-              type="text"
-              autoComplete="given-name"
-              placeholder="Your first name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="auth-email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-        ) : null}
-        {authMode === "signup" ? (
-          <div className="modal-field">
-            <label htmlFor="auth-age">Age</label>
-            <input
-              id="auth-age"
-              type="number"
-              min={10}
-              max={100}
-              inputMode="numeric"
-              placeholder="e.g. 17"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-            />
-          </div>
-        ) : null}
-        {authMode === "signup" ? (
-          <div className="modal-field">
-            <label htmlFor="auth-location">Location</label>
-            <input
-              id="auth-location"
-              type="text"
-              autoComplete="address-level2"
-              placeholder="City, State"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </div>
-        ) : null}
-        <div className="modal-field">
-          <label htmlFor="auth-password">Password</label>
-          <input
-            id="auth-password"
-            type="password"
-            autoComplete={authMode === "signup" ? "new-password" : "current-password"}
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="button" className="modal-submit" onClick={submit}>
-          {authMode === "signup" ? "Create free account" : "Sign in"}
-        </button>
-        <p className="modal-switch">
           {authMode === "signup" ? (
-            <>
-              Already have an account?{" "}
-              <button type="button" className="nv-inline-link" onClick={() => setAuthMode("login")}>
-                Sign in
+            <div className="modal-field">
+              <label htmlFor="auth-name">First name</label>
+              <input
+                id="auth-name"
+                type="text"
+                autoComplete="given-name"
+                placeholder="Your first name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+          ) : null}
+          {authMode === "login" && usePassword ? (
+            <div className="modal-field">
+              <label htmlFor="auth-password">Password</label>
+              <input
+                id="auth-password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          ) : null}
+          <button type="button" className="modal-submit" onClick={submit}>
+            {authMode === "signup"
+              ? "Unlock My Plan →"
+              : usePassword
+                ? "Sign in"
+                : "Send sign-in link"}
+          </button>
+          {authMode === "login" ? (
+            <p className="modal-switch">
+              <button
+                type="button"
+                className="nv-inline-link"
+                onClick={() => setUsePassword((p) => !p)}
+              >
+                {usePassword ? "Use email link instead" : "Sign in with password instead"}
               </button>
-            </>
-          ) : (
-            <>
-              New to jobbit?{" "}
-              <button type="button" className="nv-inline-link" onClick={() => setAuthMode("signup")}>
-                Create account
-              </button>
-            </>
-          )}
-        </p>
+            </p>
+          ) : null}
+          <p className="modal-switch">
+            {authMode === "signup" ? (
+              <>
+                Already have an account?{" "}
+                <button type="button" className="nv-inline-link" onClick={() => setAuthMode("login")}>
+                  Sign in
+                </button>
+              </>
+            ) : (
+              <>
+                New to jobbit?{" "}
+                <button type="button" className="nv-inline-link" onClick={() => setAuthMode("signup")}>
+                  Create account
+                </button>
+              </>
+            )}
+          </p>
         </div>
       </div>
     </div>

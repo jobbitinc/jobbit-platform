@@ -1,5 +1,6 @@
 import { NavigatorShell } from "@/components/navigator/NavigatorShell";
 import "@/styles/navigator.css";
+import "@/styles/navigator-dark-theme.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

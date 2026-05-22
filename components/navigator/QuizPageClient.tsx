@@ -1,74 +1,122 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { quizQuestions } from "@/lib/quiz-data";
 import { useCareer } from "./CareerContext";
 
 export function QuizPageClient() {
   const { completeQuiz } = useCareer();
   const [step, setStep] = useState(0);
+  const [slideDir, setSlideDir] = useState<"forward" | "back">("forward");
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const q = quizQuestions[step];
   const total = quizQuestions.length;
-  const progress = useMemo(() => (step / total) * 100, [step, total]);
+  const isLast = step === total - 1;
   const selected = answers[q.id];
 
-  const select = useCallback((qid: string, value: string) => {
-    setAnswers((prev) => ({ ...prev, [qid]: value }));
+  const goToStep = useCallback((next: number, dir: "forward" | "back") => {
+    setSlideDir(dir);
+    setStep(next);
   }, []);
 
-  const next = useCallback(async () => {
-    if (!selected) return;
-    if (step < total - 1) {
-      setStep((s) => s + 1);
-      return;
-    }
+  const select = useCallback(
+    (qid: string, value: string) => {
+      setAnswers((prev) => ({ ...prev, [qid]: value }));
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      if (step < total - 1) {
+        advanceTimer.current = setTimeout(() => {
+          goToStep(step + 1, "forward");
+        }, 300);
+      }
+    },
+    [goToStep, step, total],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    };
+  }, []);
+
+  const allAnswered = useMemo(
+    () => quizQuestions.every((question) => Boolean(answers[question.id])),
+    [answers],
+  );
+
+  const submitMatches = useCallback(async () => {
+    if (!allAnswered) return;
     await completeQuiz(answers);
-  }, [answers, completeQuiz, selected, step, total]);
+  }, [allAnswered, answers, completeQuiz]);
 
   const back = useCallback(() => {
-    if (step > 0) setStep((s) => s - 1);
-  }, [step]);
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    if (step > 0) goToStep(step - 1, "back");
+  }, [goToStep, step]);
+
+  const dots = useMemo(
+    () =>
+      Array.from({ length: total }, (_, i) => ({
+        done: i < step,
+        active: i === step,
+      })),
+    [step, total],
+  );
 
   return (
     <div className="nav-page-quiz nv-animate-in">
       <div className="quiz-wrap">
-        <div className="quiz-progress-bar">
-          <div className="quiz-progress-fill" style={{ width: `${progress}%` }} />
-        </div>
-        <div className="quiz-step-label">
-          Question {step + 1} of {total}
-        </div>
-        <h2 className="quiz-q">{q.question}</h2>
-        <p className="quiz-q-sub">{q.sub}</p>
-        <div className="quiz-options">
-          {q.options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              className={`quiz-option${selected === opt.value ? " selected" : ""}`}
-              onClick={() => select(q.id, opt.value)}
-            >
-              <div className="quiz-option-icon">{opt.icon}</div>
-              <div className="quiz-option-text">
-                <strong>{opt.label}</strong>
-                <span>{opt.desc}</span>
-              </div>
-            </button>
+        <div className="quiz-dots" aria-label="Quiz progress">
+          {dots.map((d, i) => (
+            <span
+              key={i}
+              className={`quiz-dot${d.done ? " done" : ""}${d.active ? " active" : ""}`}
+              aria-current={d.active ? "step" : undefined}
+            />
           ))}
         </div>
-        <div className="quiz-nav">
+        <div key={step} className={`quiz-slide quiz-slide-${slideDir}`}>
+          <div className="quiz-step-label">
+            Question {String(step + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
+          </div>
+          <h2 className="quiz-q">{q.question}</h2>
+          <p className="quiz-q-sub">{q.sub}</p>
+          <div className="quiz-options">
+            {q.options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`quiz-option${selected === opt.value ? " selected" : ""}`}
+                onClick={() => select(q.id, opt.value)}
+              >
+                <div className="quiz-option-icon">{opt.icon}</div>
+                <div className="quiz-option-text">
+                  <strong>{opt.label}</strong>
+                  <span>{opt.desc}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={`quiz-nav${isLast ? " quiz-nav-final" : ""}`}>
           {step > 0 ? (
-            <button type="button" className="btn-secondary" onClick={back}>
+            <button type="button" className="btn-secondary quiz-back-btn" onClick={back}>
               ← Back
             </button>
           ) : (
-            <span />
+            <span className="quiz-nav-spacer" aria-hidden />
           )}
-          <button type="button" className="btn-primary" disabled={!selected} onClick={() => void next()}>
-            {step === total - 1 ? "Find My Matches →" : "Continue →"}
-          </button>
+          {isLast ? (
+            <button
+              type="button"
+              className="btn-primary quiz-final-cta"
+              disabled={!allAnswered}
+              onClick={() => void submitMatches()}
+            >
+              See My Matches →
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

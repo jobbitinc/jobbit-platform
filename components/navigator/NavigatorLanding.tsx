@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getFeaturedJobs } from "@/lib/job-dummy-data";
 import { useCareer } from "./CareerContext";
-import { SampleJobsBlock } from "./SampleJobsBlock";
 
 const tradePills = [
   ["⚡", "Electrician", "$75K–$120K"],
@@ -30,109 +28,97 @@ export function NavigatorLanding() {
 
   return (
     <div className="nav-landing nv-animate-in">
-      <div className="hero">
+      <div className="hero-zone">
+        <div className="cityscape-towers" aria-hidden>
+          <span style={{ height: "45%" }} />
+          <span style={{ height: "72%" }} />
+          <span style={{ height: "58%" }} />
+          <span style={{ height: "88%" }} />
+          <span style={{ height: "65%" }} />
+          <span style={{ height: "95%" }} />
+          <span style={{ height: "70%" }} />
+          <span style={{ height: "82%" }} />
+          <span style={{ height: "55%" }} />
+          <span style={{ height: "78%" }} />
+          <span style={{ height: "48%" }} />
+        </div>
+        <div className="hero">
         <div className="hero-content">
           <div className="hero-tag">AI Career Navigator</div>
           <h1>
-            Find your <em>career</em> in the skilled trades
+            FIND YOUR CAREER
+            <span className="hero-line-lime">IN THE SKILLED TRADES</span>
           </h1>
           <p className="hero-sub">
-            Answer 8 quick questions. Get matched to your top 3 trade careers — with salaries, action plan, and everything you need to get started.
+            Answer 7 quick questions in under 3 minutes.
+            <br />
+            Get matched to your top 3 trade careers — with salaries and your action plan.
+            <br />
+            $0 — free always for students.
           </p>
           <div className="hero-actions">
+            <Link href="/navigator/quiz" className="btn-primary">
+              Find My Match →
+            </Link>
             <button
               type="button"
               className="btn-secondary"
               onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
             >
-              How it works
+              How It Works
             </button>
-            <Link href="/navigator/quiz" className="btn-primary">
-              Take the Career Quiz →
-            </Link>
-          </div>
-          <div className="hero-social">
-            <div className="hero-avatars">
-              <span>👩🏾</span>
-              <span>👨🏻</span>
-              <span>👩🏽</span>
-              <span>👦🏿</span>
-            </div>
           </div>
         </div>
-        <div className="hero-visual">
+        <div className="hero-visual phone-mockup">
           <div className="hv-header">
             <div className="hv-dot" style={{ background: "#FF5F57" }} />
             <div className="hv-dot" style={{ background: "#FFBD2E" }} />
             <div className="hv-dot" style={{ background: "#28CA41" }} />
-            <span className="hv-header-title">jobbitapp.com — your results</span>
+            <span className="hv-header-title">jobbitapp.com</span>
           </div>
           <div className="hv-body">
-            <div
-              style={{
-                fontSize: 11,
-                color: "var(--text-3)",
-                fontFamily: "var(--font-dm-mono), monospace",
-                marginBottom: 10,
-                textTransform: "uppercase",
-                letterSpacing: 1,
-              }}
-            >
-              Your Top Matches
+            <div className="hv-dash-greeting" style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4 }}>
+              Hey Alex 👋
+            </div>
+            <div style={{ fontSize: 12, color: "var(--text-3)", marginBottom: 14 }}>Ready to build your future?</div>
+            <div style={{ fontSize: 10, color: "var(--lime)", fontFamily: "var(--font-dm-mono)", marginBottom: 6, letterSpacing: 1 }}>
+              RECOMMENDED FOR YOU
             </div>
             <div className="hv-match">
               <div className="hv-match-top">
                 <span className="hv-match-name">⚡ Electrician</span>
-                <span className="hv-match-score">91% match</span>
+                <span className="hv-match-score">92% MATCH</span>
               </div>
-              <div className="hv-match-salary">$75K – $120K/yr · Union pathway</div>
+              <div className="hv-match-salary">High demand · Great pay · $75K – $120K</div>
               <div className="hv-bar">
-                <div className="hv-bar-fill" style={{ width: "91%" }} />
+                <div className="hv-bar-fill" style={{ width: "18%" }} />
               </div>
+              <div style={{ fontSize: 10, color: "var(--text-3)", marginTop: 6 }}>Your Path · 18% complete</div>
             </div>
-            <div className="hv-match">
-              <div className="hv-match-top">
-                <span className="hv-match-name">🔧 Pipefitter</span>
-                <span className="hv-match-score">84% match</span>
-              </div>
-              <div className="hv-match-salary">$70K – $110K/yr · Apprenticeship</div>
-              <div className="hv-bar">
-                <div className="hv-bar-fill" style={{ width: "84%" }} />
-              </div>
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "var(--text-3)",
-                fontFamily: "var(--font-dm-mono), monospace",
-                margin: "14px 0 8px",
-                textTransform: "uppercase",
-                letterSpacing: 1,
-              }}
-            >
-              Action Plan
+            <div style={{ fontSize: 10, color: "var(--text-3)", margin: "14px 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>
+              Top 3 Career Matches
             </div>
             <div className="hv-action-item">
-              <div className="hv-check">
-                <svg viewBox="0 0 12 10">
-                  <polyline points="1,5 4,8 11,1" />
-                </svg>
-              </div>
-              <span>Register for OSHA-10 certification</span>
+              <span>1. ⚡ Electrician</span>
+              <span style={{ color: "var(--lime)" }}>›</span>
             </div>
             <div className="hv-action-item">
-              <div className="hv-check">
-                <svg viewBox="0 0 12 10">
-                  <polyline points="1,5 4,8 11,1" />
-                </svg>
-              </div>
-              <span>Find IBEW apprenticeship near you</span>
+              <span>2. 🔧 Pipefitter</span>
+              <span style={{ color: "var(--text-3)" }}>›</span>
             </div>
             <div className="hv-action-item">
-              <div className="hv-pending" />
-              <span>Prepare application documents</span>
+              <span>3. ❄️ HVAC Tech</span>
+              <span style={{ color: "var(--text-3)" }}>›</span>
             </div>
           </div>
+        </div>
+      </div>
+
+        <div className="hero-ready-panel">
+          <h3>Ready to take the next step?</h3>
+          <Link href="/navigator/quiz" className="btn-primary">
+            Find My Match →
+          </Link>
         </div>
       </div>
 
@@ -140,9 +126,9 @@ export function NavigatorLanding() {
         <div className="stats-inner">
           <div>
             <span className="stat-num">
-              <span>3.8</span>M
+              <span>7</span>
             </span>
-            <div className="stat-label">Trade jobs unfilled by 2032</div>
+            <div className="stat-label">Questions · under 3 minutes</div>
           </div>
           <div>
             <span className="stat-num">
@@ -154,7 +140,7 @@ export function NavigatorLanding() {
             <span className="stat-num">
               $<span>0</span>
             </span>
-            <div className="stat-label">Cost to students, always</div>
+            <div className="stat-label">Cost to students</div>
           </div>
           <div>
             <span className="stat-num">
@@ -162,17 +148,6 @@ export function NavigatorLanding() {
             </span>
             <div className="stat-label">Trades in the matching engine</div>
           </div>
-        </div>
-      </div>
-
-      <div className="bg-surface">
-        <div className="section">
-          <div className="section-tag">Sample paths</div>
-          <h2 className="section-title">Example openings (demo)</h2>
-          <p className="section-sub">
-            Illustrative union, contractor, and apprenticeship-style listings — your real matches will include similar paths after the quiz.
-          </p>
-          <SampleJobsBlock jobs={getFeaturedJobs()} />
         </div>
       </div>
 
@@ -184,11 +159,11 @@ export function NavigatorLanding() {
         </p>
         <div className="steps-grid">
           {[
-            { num: "01", icon: "🎯", title: "Take the Quiz", desc: "8 questions about your work style, environment, strengths, and goals. No wrong answers — just honest ones." },
-            { num: "02", icon: "⚡", title: "Get Matched", desc: "Our AI matches you to your top 3 trades, shows you why, your readiness score, and what skills to build." },
-            { num: "03", icon: "🗺️", title: "Follow Your Plan", desc: "Every match comes with a step-by-step action plan. Certs, timelines, costs — specific to you." },
-            { num: "04", icon: "📊", title: "Track Progress", desc: "Save your results, check off milestones, and come back anytime. Your career journey, organized." },
-            { num: "05", icon: "🤝", title: "Connect & Apply", desc: "We connect you directly to apprenticeship programs, unions, and training providers near you." },
+            { num: "01", icon: "🎯", title: "Take the Quiz", desc: "7 questions about your work style, environment, strengths, and goals." },
+            { num: "02", icon: "⚡", title: "Get Matched", desc: "AI matches you to your top 3 trades with salaries and personalized why-match text." },
+            { num: "03", icon: "🗺️", title: "Follow Your Plan", desc: "Every match comes with a step-by-step action plan built for you." },
+            { num: "04", icon: "📊", title: "Track Progress", desc: "Save results, check off milestones, and come back anytime. Your career journey, organized." },
+            { num: "05", icon: "🤝", title: "Connect & Apply", desc: "Paths to apprenticeships, unions, and training providers near you." },
             { num: "06", icon: "💰", title: "Start Earning", desc: "Apprentices earn while they learn. A $60K–$120K career starts here." },
           ].map((s) => (
             <div className="step-card" key={s.title}>
@@ -201,7 +176,7 @@ export function NavigatorLanding() {
         </div>
       </section>
 
-      <div className="bg-surface">
+      <div className="bg-surface trades-section">
         <div className="section">
           <div className="section-tag">Your Pathway to Skilled Trades</div>
           <h2 className="section-title">Seventeen careers. Zero college debt.</h2>
@@ -218,11 +193,11 @@ export function NavigatorLanding() {
       </div>
 
       <div className="cta-band">
-        <h2>Your Future Starts with Eight Questions</h2>
-        <p>Join Jobbit-Find your Trade</p>
+        <h2>Your Future Starts with Seven Questions</h2>
+        <p>Join Jobbit — find your trade</p>
         <div className="cta-band-actions">
           <Link href="/navigator/quiz" className="btn-primary">
-            Start the Career Quiz →
+            Find My Match →
           </Link>
           <button type="button" className="cta-band-account" onClick={() => openAuth("signup")}>
             Create free account

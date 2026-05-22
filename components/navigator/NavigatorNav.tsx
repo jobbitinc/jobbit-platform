@@ -39,12 +39,16 @@ export function NavigatorNav() {
     <nav className="nv-nav">
       <NavLogoLink />
       {pathname === "/navigator" || pathname === "/navigator/" ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <button type="button" className="nav-text-link" onClick={() => openAuth("login")}>
-            Sign in
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            type="button"
+            className="nav-btn-outline"
+            onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+          >
+            ⚙ How It Works
           </button>
           <Link href="/navigator/quiz" className="nav-cta">
-            Start Quiz →
+            Find My Match →
           </Link>
         </div>
       ) : null}
@@ -65,13 +69,18 @@ export function NavigatorNav() {
         )
       ) : null}
       {pathname === "/navigator/dashboard" ? (
-        <button type="button" className="nav-cta" onClick={() => void logout()}>
-          Sign Out
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Link href="/navigator/quiz" className="nav-text-link">
+            Retake quiz
+          </Link>
+          <button type="button" className="nav-cta" onClick={() => void logout()}>
+            Sign Out
+          </button>
+        </div>
       ) : null}
       {pathname === "/navigator/login" ? (
         <Link href="/navigator/quiz" className="nav-cta">
-          Take quiz
+          Find My Match →
         </Link>
       ) : null}
     </nav>

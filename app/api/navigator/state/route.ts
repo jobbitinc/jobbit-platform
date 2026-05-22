@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import type { MatchResultSet, QuizAnswers } from "@/lib/career/types";
-import { validateMatchResultSet, validatePromptQuizAnswers } from "@/lib/career/validation";
+import { parseStoredQuizAnswers, toPromptAnswers, validateMatchResultSet, validateNavigatorState } from "@/lib/career/validation";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
-
-type NavigatorPayload = {
-  answers: QuizAnswers;
-  matches: MatchResultSet;
-  completedSteps: Record<string, boolean>;
-};
 
 class HttpError extends Error {
   status: number;
@@ -39,30 +32,6 @@ async function getAuthedUserId(req: Request): Promise<string> {
   return data.user.id;
 }
 
-function validateStateBody(raw: unknown): NavigatorPayload {
-  if (typeof raw !== "object" || raw == null) {
-    throw new Error("Payload must be an object");
-  }
-  const candidate = raw as {
-    answers?: unknown;
-    matches?: unknown;
-    completedSteps?: unknown;
-  };
-  const answers = validatePromptQuizAnswers(candidate.answers);
-  const matches = validateMatchResultSet(candidate.matches, answers);
-  if (
-    typeof candidate.completedSteps !== "object" ||
-    candidate.completedSteps == null ||
-    Array.isArray(candidate.completedSteps)
-  ) {
-    throw new Error("completedSteps must be an object");
-  }
-  const completedSteps = Object.fromEntries(
-    Object.entries(candidate.completedSteps).map(([k, v]) => [k, Boolean(v)]),
-  );
-  return { answers, matches, completedSteps };
-}
-
 export async function GET(req: Request) {
   try {
     const userId = await getAuthedUserId(req);
@@ -84,8 +53,9 @@ export async function GET(req: Request) {
     if (!data) {
       return NextResponse.json({ ok: true, data: null });
     }
-    const answers = validatePromptQuizAnswers(data.answers);
-    const matches = validateMatchResultSet(data.matches, answers);
+    const answers = parseStoredQuizAnswers(data.answers);
+    const promptAnswers = toPromptAnswers(answers);
+    const matches = validateMatchResultSet(data.matches, promptAnswers);
     const completedSteps =
       typeof data.completed_steps === "object" && data.completed_steps && !Array.isArray(data.completed_steps)
         ? Object.fromEntries(
@@ -105,7 +75,7 @@ export async function GET(req: Request) {
 export async function PUT(req: Request) {
   try {
     const userId = await getAuthedUserId(req);
-    const payload = validateStateBody(await req.json());
+    const payload = validateNavigatorState(await req.json());
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
       return NextResponse.json(
