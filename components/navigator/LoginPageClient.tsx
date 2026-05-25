@@ -20,7 +20,10 @@ export function LoginPageClient() {
     }
   }, [user, next, router]);
 
+  const openedRef = useRef(false);
   useEffect(() => {
+    if (openedRef.current) return;
+    openedRef.current = true;
     const dest = next && next.startsWith("/") ? next : null;
     openAuth(mode, dest);
   }, [mode, next, openAuth]);

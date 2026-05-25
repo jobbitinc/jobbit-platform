@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useCareer } from "./CareerContext";
 
 export function ResultsUnlockForm() {
-  const { signup, openAuth, showToast } = useCareer();
+  const { signup, openAuth, showToast, authLoading } = useCareer();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
   const submit = () => {
+    if (authLoading) return;
     if (!name.trim()) {
       showToast("Please enter your first name.", "error");
       return;
@@ -44,8 +45,13 @@ export function ResultsUnlockForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <button type="button" className="btn-primary results-unlock-submit" onClick={submit}>
-        Unlock My Plan →
+      <button
+        type="button"
+        className="btn-primary results-unlock-submit"
+        disabled={authLoading}
+        onClick={submit}
+      >
+        {authLoading ? "Sending link…" : "Unlock My Plan →"}
       </button>
       <p className="results-unlock-signin">
         Already have an account?{" "}

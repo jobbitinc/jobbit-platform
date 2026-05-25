@@ -22,6 +22,7 @@ import {
 import { generateFallbackResults } from "@/lib/match-fallback";
 import { toPromptAnswers, validateMatchResultSet, validateQuizAnswers } from "@/lib/career/validation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { canSendAuthEmail, formatAuthError, markAuthEmailSent } from "@/lib/auth-email-guard";
 import { getAuthEmailRedirectOrigin } from "@/lib/site";
 
 export type SessionUser = { id: string; email: string; name: string };
@@ -43,6 +44,7 @@ type CareerContextValue = {
   setActiveTradeTab: (n: number) => void;
   isMatching: boolean;
   authOpen: boolean;
+  authLoading: boolean;
   authMode: "signup" | "login";
   openAuth: (mode?: "signup" | "login", redirectAfter?: string | null) => void;
   closeAuth: () => void;
@@ -70,7 +72,9 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
   const [activeTradeTab, setActiveTradeTab] = useState(0);
   const [isMatching, setIsMatching] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
+  const authInFlightRef = useRef(false);
   const [toast, setToast] = useState<{ message: string; tone: ToastTone } | null>(null);
   const authRedirectRef = useRef<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -262,13 +266,17 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
+      if (authInFlightRef.current) return;
+      authInFlightRef.current = true;
+      setAuthLoading(true);
+      try {
       const supabase = getSupabaseBrowserClient();
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
       if (error || !data.user) {
-        showToast(error?.message ?? "Invalid email or password.", "error");
+        showToast(formatAuthError(error?.message ?? "Invalid email or password."), "error");
         return;
       }
       const pendingByEmail = data.user.email ? readPendingCareerForEmail(data.user.email) : null;
@@ -304,35 +312,64 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       const dest = authRedirectRef.current;
       authRedirectRef.current = null;
       router.push(dest && dest.startsWith("/") ? dest : "/navigator/dashboard");
+      } finally {
+        authInFlightRef.current = false;
+        setAuthLoading(false);
+      }
     },
-    [readServerState, router, showToast],
+    [readServerState, router, showToast, writeServerState],
   );
 
   const requestLoginLink = useCallback(
     async (email: string) => {
+      const trimmed = email.trim();
+      if (authInFlightRef.current) return;
+      const cooldown = canSendAuthEmail(trimmed);
+      if (!cooldown.ok) {
+        showToast(`Please wait ${cooldown.retryInSec}s before requesting another email.`, "error");
+        return;
+      }
+      authInFlightRef.current = true;
+      setAuthLoading(true);
+      try {
       const supabase = getSupabaseBrowserClient();
       const appUrl = getAuthEmailRedirectOrigin();
       const dest = authRedirectRef.current;
       const next = dest && dest.startsWith("/") ? dest : "/navigator/dashboard";
       const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
+        email: trimmed,
         options: {
           shouldCreateUser: false,
           emailRedirectTo: `${appUrl}/navigator/login?next=${encodeURIComponent(next)}`,
         },
       });
       if (error) {
-        showToast(error.message, "error");
+        showToast(formatAuthError(error.message), "error");
         return;
       }
+      markAuthEmailSent(trimmed);
       setAuthOpen(false);
       showToast("Check your email for a sign-in link.", "success");
+      } finally {
+        authInFlightRef.current = false;
+        setAuthLoading(false);
+      }
     },
     [showToast],
   );
 
   const signup = useCallback(
     async (email: string, name: string) => {
+      const trimmed = email.trim();
+      if (authInFlightRef.current) return;
+      const cooldown = canSendAuthEmail(trimmed);
+      if (!cooldown.ok) {
+        showToast(`Please wait ${cooldown.retryInSec}s before requesting another email.`, "error");
+        return;
+      }
+      authInFlightRef.current = true;
+      setAuthLoading(true);
+      try {
       let m = matches;
       let a = answers;
       let c = completedSteps;
@@ -356,7 +393,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       const dest = authRedirectRef.current;
       const next = dest && dest.startsWith("/") ? dest : "/navigator/dashboard";
       const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
+        email: trimmed,
         options: {
           shouldCreateUser: true,
           emailRedirectTo: `${appUrl}/navigator/login?next=${encodeURIComponent(next)}`,
@@ -364,16 +401,21 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
         },
       });
       if (error) {
-        showToast(error.message, "error");
+        showToast(formatAuthError(error.message), "error");
         return;
       }
-      writePendingCareerForEmail(email.trim(), {
+      markAuthEmailSent(trimmed);
+      writePendingCareerForEmail(trimmed, {
         answers: a,
         matches: m,
         completedSteps: c,
       });
       setAuthOpen(false);
       showToast("Check your email to unlock your full roadmap.", "success");
+      } finally {
+        authInFlightRef.current = false;
+        setAuthLoading(false);
+      }
     },
     [answers, completedSteps, matches, showToast],
   );
@@ -429,6 +471,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       setActiveTradeTab,
       isMatching,
       authOpen,
+      authLoading,
       authMode,
       openAuth,
       closeAuth,
@@ -452,6 +495,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
       activeTradeTab,
       isMatching,
       authOpen,
+      authLoading,
       authMode,
       openAuth,
       closeAuth,

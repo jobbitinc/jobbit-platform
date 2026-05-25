@@ -5,7 +5,8 @@ import { useState } from "react";
 import { useCareer } from "./CareerContext";
 
 export function AuthModal() {
-  const { authOpen, closeAuth, authMode, setAuthMode, login, requestLoginLink, signup, showToast } = useCareer();
+  const { authOpen, authLoading, closeAuth, authMode, setAuthMode, login, requestLoginLink, signup, showToast } =
+    useCareer();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +15,7 @@ export function AuthModal() {
   if (!authOpen) return null;
 
   const submit = () => {
+    if (authLoading) return;
     if (!email.trim()) {
       showToast("Enter your email to continue.", "error");
       return;
@@ -37,6 +39,19 @@ export function AuthModal() {
     }
   };
 
+  const submitLabel =
+    authMode === "signup"
+      ? authLoading
+        ? "Sending link…"
+        : "Unlock My Plan →"
+      : usePassword
+        ? authLoading
+          ? "Signing in…"
+          : "Sign in"
+        : authLoading
+          ? "Sending link…"
+          : "Send sign-in link";
+
   return (
     <div
       className="modal-overlay open"
@@ -48,13 +63,19 @@ export function AuthModal() {
       }}
     >
       <div className="modal" style={{ position: "relative" }}>
-        <button type="button" className="modal-close" onClick={closeAuth} aria-label="Close">
+        <button type="button" className="modal-close" onClick={closeAuth} aria-label="Close" disabled={authLoading}>
           ✕
         </button>
         <div className="modal-header-brand">
           <Image src="/logo.png" alt="jobbit" width={240} height={48} className="modal-logo-img" />
         </div>
-        <div className="modal-body">
+        <form
+          className="modal-body"
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
+          }}
+        >
           <h3 id="auth-modal-title">
             {authMode === "signup" ? "Unlock your action plan" : "Welcome back"}
           </h3>
@@ -73,6 +94,7 @@ export function AuthModal() {
               autoComplete="email"
               placeholder="you@email.com"
               value={email}
+              disabled={authLoading}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -85,6 +107,7 @@ export function AuthModal() {
                 autoComplete="given-name"
                 placeholder="Your first name"
                 value={name}
+                disabled={authLoading}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -98,22 +121,20 @@ export function AuthModal() {
                 autoComplete="current-password"
                 placeholder="••••••••"
                 value={password}
+                disabled={authLoading}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           ) : null}
-          <button type="button" className="modal-submit" onClick={submit}>
-            {authMode === "signup"
-              ? "Unlock My Plan →"
-              : usePassword
-                ? "Sign in"
-                : "Send sign-in link"}
+          <button type="submit" className="modal-submit" disabled={authLoading}>
+            {submitLabel}
           </button>
           {authMode === "login" ? (
             <p className="modal-switch">
               <button
                 type="button"
                 className="nv-inline-link"
+                disabled={authLoading}
                 onClick={() => setUsePassword((p) => !p)}
               >
                 {usePassword ? "Use email link instead" : "Sign in with password instead"}
@@ -124,20 +145,30 @@ export function AuthModal() {
             {authMode === "signup" ? (
               <>
                 Already have an account?{" "}
-                <button type="button" className="nv-inline-link" onClick={() => setAuthMode("login")}>
+                <button
+                  type="button"
+                  className="nv-inline-link"
+                  disabled={authLoading}
+                  onClick={() => setAuthMode("login")}
+                >
                   Sign in
                 </button>
               </>
             ) : (
               <>
                 New to jobbit?{" "}
-                <button type="button" className="nv-inline-link" onClick={() => setAuthMode("signup")}>
+                <button
+                  type="button"
+                  className="nv-inline-link"
+                  disabled={authLoading}
+                  onClick={() => setAuthMode("signup")}
+                >
                   Create account
                 </button>
               </>
             )}
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );
