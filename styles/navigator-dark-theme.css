@@ -223,8 +223,7 @@
 
 [data-navigator] .stats-strip,
 [data-navigator] .cta-band,
-[data-navigator] footer.nv-footer,
-[data-navigator] .dash-header {
+[data-navigator] footer.nv-footer {
   background: #050a05;
 }
 
@@ -826,6 +825,100 @@
 [data-navigator] .dash-match-row .chevron {
   color: var(--lime);
   font-size: 20px;
+}
+
+[data-navigator] .dash-complete-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(138, 255, 0, 0.1);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+}
+[data-navigator] .dash-complete-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+[data-navigator] .dash-complete-banner strong {
+  display: block;
+  font-family: var(--font-barlow), sans-serif;
+  font-size: 18px;
+  color: var(--lime);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+[data-navigator] .dash-complete-banner p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.45;
+  max-width: 42ch;
+}
+[data-navigator] .dash-complete-cta {
+  margin-left: auto;
+  align-self: center;
+  white-space: nowrap;
+}
+
+/* Dashboard — path header + action plan (text was var(--navy) = invisible) */
+[data-navigator] .dash-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+[data-navigator] .dash-sub {
+  color: var(--text-2);
+}
+[data-navigator] .apc-header {
+  border-bottom-color: var(--border);
+}
+[data-navigator] .apc-header-left strong,
+[data-navigator] .as-title {
+  color: #fff;
+}
+[data-navigator] .as-detail {
+  color: var(--text-2);
+}
+[data-navigator] .action-plan-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: none;
+}
+[data-navigator] .action-step {
+  border-bottom-color: var(--border);
+}
+[data-navigator] .action-step:hover {
+  background: rgba(138, 255, 0, 0.06);
+}
+[data-navigator] .action-step.done {
+  opacity: 0.72;
+}
+[data-navigator] .action-step.done .as-title {
+  color: var(--text-3);
+}
+[data-navigator] .as-check {
+  border-color: var(--border-dark);
+  background: rgba(0, 0, 0, 0.2);
+}
+[data-navigator] .action-step.done .as-check {
+  background: var(--lime);
+  border-color: var(--lime);
+}
+[data-navigator] .as-tag.time {
+  background: rgba(138, 255, 0, 0.12);
+  color: var(--lime);
+}
+[data-navigator] .as-tag.cost {
+  background: rgba(138, 255, 0, 0.08);
+  color: var(--text-2);
+}
+[data-navigator] .as-tag.priority {
+  background: rgba(138, 255, 0, 0.15);
+  color: var(--lime);
+  border: 1px solid var(--border-dark);
 }
 
 /* Quiz slide transitions */

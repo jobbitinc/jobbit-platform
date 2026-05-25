@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { enrichMatchesWithJobs } from "@/lib/job-dummy-data";
@@ -61,16 +61,26 @@ export function DashboardPageClient() {
     const pct = totalSteps > 0 ? completedCount / totalSteps : 0;
     const retention = getRetention(user.id);
 
-    if (pct >= 0.5 && prevPct.current < 0.5 && retention && !retention.celebrated50) {
-      setMilestone(50);
-      markCelebrated(user.id, 50);
-    }
-    if (pct >= 1 && prevPct.current < 1 && retention && !retention.celebrated100) {
+    const crossed50 = pct >= 0.5 && prevPct.current < 0.5;
+    const crossed100 = pct >= 1 && prevPct.current < 1;
+
+    if (crossed100 && retention && !retention.celebrated100) {
       setMilestone(100);
-      markCelebrated(user.id, 100);
+    } else if (crossed50 && retention && !retention.celebrated50) {
+      setMilestone(50);
     }
     prevPct.current = pct;
   }, [completedSteps, enriched, user?.id]);
+
+  const dismissMilestone50 = useCallback(() => {
+    if (user?.id) markCelebrated(user.id, 50);
+    setMilestone(null);
+  }, [user?.id]);
+
+  const dismissMilestone100 = useCallback(() => {
+    if (user?.id) markCelebrated(user.id, 100);
+    setMilestone(null);
+  }, [user?.id]);
 
   if (!bootstrapped || !user || !matches || !enriched) {
     return (
@@ -89,6 +99,9 @@ export function DashboardPageClient() {
   const match = enriched.matches[activeTradeTab];
   const steps = match.actionPlan;
   const doneCount = steps.filter((_, i) => completedSteps[`${activeTradeTab}-${i}`]).length;
+  const retention = user?.id ? getRetention(user.id) : null;
+  const planComplete = progressPct >= 100;
+  const celebrated100 = retention?.celebrated100 ?? false;
 
   return (
     <div className="nav-page-dashboard nv-animate-in">
@@ -97,19 +110,19 @@ export function DashboardPageClient() {
         title="Halfway there. Keep going."
         subtitle="You have completed 50% of your action plan steps. Every checkbox gets you closer to your trade career."
         primaryLabel="Keep going"
-        onPrimary={() => setMilestone(null)}
-        onClose={() => setMilestone(null)}
+        onPrimary={dismissMilestone50}
+        onClose={dismissMilestone50}
       />
       <MilestoneCelebration
         open={milestone === 100}
         title="Plan complete!"
-        subtitle={`You finished your ${match.trade} action plan. Ready to explore your #2 match?`}
+        subtitle={`You finished all action plan steps across your matches. Ready to explore your #2 career match?`}
         primaryLabel="Explore your #2 match →"
         onPrimary={() => {
           setActiveTradeTab(1);
-          setMilestone(null);
+          dismissMilestone100();
         }}
-        onClose={() => setMilestone(null)}
+        onClose={dismissMilestone100}
       />
 
       <div className="dashboard-wrap dash-phone-layout">
@@ -119,6 +132,27 @@ export function DashboardPageClient() {
             streak={streak}
             onDismiss={() => setBannerDismissed(true)}
           />
+        ) : null}
+
+        {planComplete && celebrated100 ? (
+          <div className="dash-complete-banner" role="status">
+            <span className="dash-complete-icon" aria-hidden>
+              🎉
+            </span>
+            <div>
+              <strong>Plan complete!</strong>
+              <p>You finished every step. Explore your other matches or retake the quiz anytime.</p>
+            </div>
+            {enriched.matches.length > 1 ? (
+              <button
+                type="button"
+                className="btn-secondary dash-complete-cta"
+                onClick={() => setActiveTradeTab(1)}
+              >
+                View #2 match →
+              </button>
+            ) : null}
+          </div>
         ) : null}
 
         <div className="dash-header">
