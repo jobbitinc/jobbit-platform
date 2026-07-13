@@ -12,7 +12,7 @@ export type QuizQuestion = {
   options: QuizOption[];
 };
 
-/** Revised MVP questions 1–7 (Q8 values question is Phase 2 — not included). */
+/** MVP quiz — 6 questions (income goal removed; Q8 values is Phase 2 — not included). */
 export const quizQuestions: QuizQuestion[] = [
   {
     id: "workStyle",
@@ -135,37 +135,6 @@ export const quizQuestions: QuizQuestion[] = [
         icon: "✂️",
         label: "Creative and hands-on craft",
         desc: "Cosmetology, culinary, design, custom work",
-      },
-    ],
-  },
-  {
-    id: "income",
-    question: "Where do you want to be financially in 5 years?",
-    sub: "Pick the range that feels right for where you want to go.",
-    options: [
-      {
-        value: "$40K–$60K",
-        icon: "💰",
-        label: "$40,000 – $60,000 a year",
-        desc: "Stable income, good benefits, room to grow",
-      },
-      {
-        value: "$60K–$80K",
-        icon: "💰",
-        label: "$60,000 – $80,000 a year",
-        desc: "I want to live comfortably and save money",
-      },
-      {
-        value: "$80K–$100K",
-        icon: "💰",
-        label: "$80,000 – $100,000 a year",
-        desc: "I want to build real wealth and security",
-      },
-      {
-        value: "$100K+",
-        icon: "💰",
-        label: "$100,000+ a year",
-        desc: "I want to reach six figures and build something bigger",
       },
     ],
   },

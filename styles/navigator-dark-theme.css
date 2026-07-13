@@ -219,6 +219,17 @@
   text-transform: uppercase;
   color: #fff;
   letter-spacing: 0.04em;
+  margin: 0;
+}
+[data-navigator] .hero-ready-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+[data-navigator] .hero-ready-sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
 }
 
 [data-navigator] .stats-strip,
@@ -265,10 +276,10 @@
   border-color: var(--border);
   color: var(--text);
 }
-[data-navigator] .step-card:hover,
-[data-navigator] .trade-pill:hover {
+[data-navigator] .trade-pill:hover,
+[data-navigator] .trade-pill:focus-visible {
   border-color: var(--lime);
-  box-shadow: 0 0 24px rgba(138, 255, 0, 0.08);
+  box-shadow: 0 0 0 1px rgba(138, 255, 0, 0.2);
 }
 [data-navigator] .step-title,
 [data-navigator] .trade-pill-name,
@@ -278,6 +289,48 @@
 }
 [data-navigator] .step-card::before {
   background: linear-gradient(90deg, var(--lime), #5ce600);
+  opacity: 0.4;
+}
+[data-navigator] .trade-pill-tooltip {
+  background: #0f1a0f;
+  border: 1px solid var(--border-dark);
+  color: var(--text);
+}
+[data-navigator] .trade-pill-tooltip::after {
+  border-top-color: #0f1a0f;
+}
+
+[data-navigator] .nav-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+[data-navigator] .nav-btn-how,
+[data-navigator] .nav-btn-match {
+  padding: 8px 18px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+[data-navigator] .hero-ready-sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
+}
+[data-navigator] .cta-band-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+[data-navigator] .cta-band .btn-cta-how {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+[data-navigator] .cta-band .btn-cta-how:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+  background: rgba(138, 255, 0, 0.08);
 }
 
 [data-navigator] .cta-band .cta-band-account {

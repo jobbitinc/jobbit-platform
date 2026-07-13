@@ -79,7 +79,7 @@ function TradeCard({
               <span className="frosted-lock-icon" aria-hidden>
                 🔒
               </span>
-              <span>Create a free account to unlock</span>
+              <span>Create an account to unlock</span>
             </div>
           ) : null}
         </div>
@@ -157,7 +157,7 @@ export function ResultsPageClient() {
         {anonymous ? (
           <div className="results-unlock">
             <h3>Your Action Plan is Ready</h3>
-            <p className="results-unlock-lead">Create a free account to unlock your full roadmap.</p>
+            <p className="results-unlock-lead">Create an account to unlock your full roadmap.</p>
             <div className="results-blur-preview" aria-hidden>
               <div className="results-blur-row">
                 <span className="results-blur-step">1</span>
@@ -169,7 +169,7 @@ export function ResultsPageClient() {
               </div>
               <div className="results-blur-row">
                 <span className="results-blur-step">3</span>
-                <span>Apply to programs near you</span>
+                <span>Apply to New Jersey programs</span>
               </div>
             </div>
             <ResultsUnlockForm />

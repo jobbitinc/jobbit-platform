@@ -49,7 +49,7 @@ export function LoginPageClient() {
     <div className="nav-landing nv-animate-in">
       <div className="section" style={{ maxWidth: 440, paddingTop: 120, textAlign: "center" }}>
         <p className="section-sub" style={{ marginBottom: 16 }}>
-          Use the dialog above to sign in or create a free account.
+          Use the dialog above to sign in or create an account.
         </p>
         <p style={{ fontSize: 14, color: "var(--text-3)" }}>
           <Link href="/navigator/quiz">Take the career quiz</Link>

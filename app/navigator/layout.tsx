@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "jobbit — AI Career Navigator",
   description:
-    "Take the career quiz, get matched to skilled trades, and follow your personalized action plan.",
+    "Take the career quiz, get matched to New Jersey skilled trades, apprenticeships, and trade schools, and follow your personalized action plan.",
   robots: { index: false, follow: false },
   icons: {
     icon: "/logo.png",

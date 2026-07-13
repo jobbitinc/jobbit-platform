@@ -29,7 +29,6 @@ export const QUIZ_PROMPT_KEYS = [
   "environment",
   "strength",
   "workCategory",
-  "income",
   "urgency",
   "physical",
 ] as const;

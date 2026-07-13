@@ -10,9 +10,9 @@ import {
 
 const MODEL = "claude-sonnet-4-6";
 
-const SYSTEM_PROMPT = `You are Jobbit, an expert AI career navigator specializing in skilled trades careers for young people ages 16–30. You have deep knowledge of apprenticeship pathways, union programs, certification requirements, salary ranges, and career progression for all skilled trades in the United States.
+const SYSTEM_PROMPT = `You are Jobbit, an expert AI career navigator specializing in skilled trades careers for young people ages 16–30 in New Jersey. You have deep knowledge of New Jersey trade schools, county colleges, registered apprenticeships, union locals, NJDOL workforce programs, certification requirements, salary ranges, and career progression for skilled trades in New Jersey.
 
-Your role is to analyze a user's quiz answers and return the top 3 skilled trade career matches as structured JSON. You must be specific, encouraging, and honest. Match quality matters more than speed. Every recommendation must reference the user's actual answers - do not return generic matches.
+Your role is to analyze a user's quiz answers and return the top 3 skilled trade career matches as structured JSON. Every recommendation, salary context, skill gap, and action-plan step must be grounded in New Jersey pathways (NJ trade schools, NJ apprenticeships, NJ unions, and NJ employers) — do not recommend out-of-state programs as primary options. You must be specific, encouraging, and honest. Match quality matters more than speed. Every recommendation must reference the user's actual answers - do not return generic matches.
 
 Return ONLY valid JSON. No preamble, no explanation, no markdown formatting, no code blocks. Raw JSON only.`;
 
@@ -33,20 +33,20 @@ function urgencyMatchingNote(urgency: string): string {
 
 function buildUserPrompt(answers: PromptQuizAnswers, slugs: ReturnType<typeof getRawQuizSlugs>): string {
   const urgencyNote = urgencyMatchingNote(slugs.urgency);
-  return `A young person completed Jobbit's 7-question career quiz. Here are their answers:
+  return `A young person in New Jersey completed Jobbit's 6-question career quiz. Here are their answers:
 
 - Work day preference: ${answers.workStyle}
 - Work environment preference: ${answers.environment}
 - Current strength / learning profile: ${answers.strength}
 - workCategory: ${slugs.workCategory}
-- incomeGoal: ${answers.income}
 - incomeUrgency: ${answers.urgency}
 - Physical comfort level: ${answers.physical}
 
 Matching constraints (required):
+- Geographic focus is New Jersey ONLY. Reference NJ trade schools, NJ community/county colleges, NJ registered apprenticeships, NJ union halls, NJDOL / One-Stop Career Centers, and NJ employers in actionPlan details and whyMatch when relevant.
 - workCategory must narrow the trade pool: electrical-technical, mechanical-structural, environment-outdoors, or creative-craft.
-- incomeGoal is the user's 5-year target range only (e.g. $60K–$80K). Higher ranges ($80K–$100K, $100K+) favor union apprenticeships and licensed trades; lower ranges favor faster-entry trades with growth potential.
 - ${urgencyNote}
+- Prefer New Jersey salary ranges and licensing / board requirements where they apply (e.g. NJ electrical licensing path, NJ Board of Cosmetology).
 
 Available trades to match from: Electrician, Plumber, HVAC Technician, Welder, Carpenter, Construction Manager, Heavy Equipment Operator, Pipefitter, Ironworker, Sheet Metal Worker, Elevator Mechanic, Boilermaker, Solar Installer, Wind Turbine Technician, Industrial Maintenance Mechanic, Brick/Stonemason, Cosmetologist
 

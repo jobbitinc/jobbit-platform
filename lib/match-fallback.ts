@@ -112,13 +112,13 @@ function actionPlanFor(tradeName: string, urgency: string) {
   const fastPath = urgency === "right-now" || urgency === "within-6-months";
   const step1 = fastPath
     ? {
-        title: "Complete OSHA-10 and any trade-specific short cert",
+        title: "Complete OSHA-10 and any NJ short cert",
         detail:
-          "Prioritize certifications you can finish in under 90 days (OSHA-10, employer safety orientations, or state pre-apprenticeship cards) before committing to a multi-year apprenticeship.",
+          "Prioritize certifications you can finish in under 90 days (OSHA-10, employer safety orientations, or New Jersey pre-apprenticeship cards) before committing to a multi-year NJ apprenticeship.",
       }
     : {
-        title: `Research ${tradeName} registered apprenticeship programs`,
-        detail: `Visit apprenticeship.gov and your local union hall to find registered ${tradeName} apprenticeships in your area.`,
+        title: `Research ${tradeName} apprenticeships in New Jersey`,
+        detail: `Search apprenticeship.gov (filter New Jersey) and NJDOL registered programs, then contact the relevant NJ union hall or trade school for ${tradeName}.`,
       };
 
   return [
@@ -132,10 +132,12 @@ function actionPlanFor(tradeName: string, urgency: string) {
     },
     {
       step: 2,
-      title: fastPath ? `Find ${tradeName} helper or pre-apprenticeship roles` : "Complete OSHA-10 General Industry certification",
+      title: fastPath
+        ? `Find ${tradeName} helper or pre-apprenticeship roles in NJ`
+        : "Complete OSHA-10 General Industry certification",
       detail: fastPath
-        ? "Search local contractors, workforce boards, and pre-apprenticeship programs for paid or stipend roles while you build hours."
-        : "OSHA-10 is required or strongly preferred for most apprenticeship applications. Online courses available through OSHA.gov.",
+        ? "Search NJ contractors, county One-Stop Career Centers, and New Jersey pre-apprenticeship programs for paid or stipend roles while you build hours."
+        : "OSHA-10 is required or strongly preferred for most NJ apprenticeship applications. Online courses available through OSHA.gov.",
       timeEstimate: fastPath ? "2–4 weeks" : "1–2 days",
       cost: fastPath ? "$0" : "$25–$75",
       priority: "First",
@@ -144,24 +146,24 @@ function actionPlanFor(tradeName: string, urgency: string) {
       step: 3,
       title: "Gather application documents",
       detail:
-        "You'll need: high school diploma or GED, valid ID, drug test results, and often a physical exam. Start collecting these now.",
+        "You'll need: high school diploma or GED, valid ID, drug test results, and often a physical exam. Start collecting these for New Jersey program applications.",
       timeEstimate: "1 week",
       cost: "$50–$150",
       priority: "Next",
     },
     {
       step: 4,
-      title: "Contact your local union hall or training center",
-      detail: `Find your local trade chapter and attend an information session. Relationships matter for ${tradeName} pathways.`,
+      title: "Contact a New Jersey union hall or trade school",
+      detail: `Find the NJ local or training center for ${tradeName} and attend an information session. Relationships matter for New Jersey pathways.`,
       timeEstimate: "1–2 weeks",
       cost: "$0",
       priority: "Next",
     },
     {
       step: 5,
-      title: "Submit your apprenticeship or training application",
+      title: "Submit your NJ apprenticeship or training application",
       detail:
-        "Most programs have application windows. Submit when the window opens — competition is real but manageable with preparation.",
+        "Most New Jersey programs have application windows. Submit when the window opens — competition is real but manageable with preparation.",
       timeEstimate: "1 day",
       cost: "$0–$25",
       priority: "Then",
@@ -170,7 +172,7 @@ function actionPlanFor(tradeName: string, urgency: string) {
       step: 6,
       title: "Prepare for the aptitude test",
       detail:
-        "Most apprenticeship programs require a basic math and reading aptitude test. Practice algebra, fractions, and basic reading comprehension.",
+        "Most NJ apprenticeship programs require a basic math and reading aptitude test. Practice algebra, fractions, and basic reading comprehension.",
       timeEstimate: "2–4 weeks",
       cost: "$0",
       priority: "Then",
@@ -181,7 +183,6 @@ function actionPlanFor(tradeName: string, urgency: string) {
 export function generateFallbackResults(answers: QuizAnswers): MatchResultSet {
   const tradesList = pickTrades(answers);
   const workLabel = optionLabel("workStyle", answers.workStyle ?? "");
-  const incomeGoal = answers.income ?? "$60K–$80K";
   const urgency = answers.urgency ?? "within-6-months";
 
   return {
@@ -194,7 +195,7 @@ export function generateFallbackResults(answers: QuizAnswers): MatchResultSet {
         emoji: details.emoji,
         matchScore: details.score - i * 6,
         salaryRange: details.salary,
-        whyMatch: `Your ${workLabel.toLowerCase()} day preference and ${answers.workCategory ?? "trade"} focus point strongly toward ${tradeName}. Your income goal of ${incomeGoal} and preference for ${envLabel.toLowerCase()} align with how ${tradeName}s typically build their careers.`,
+        whyMatch: `Your ${workLabel.toLowerCase()} day preference and ${answers.workCategory ?? "trade"} focus point strongly toward ${tradeName} pathways in New Jersey. Your preference for ${envLabel.toLowerCase()} aligns with how ${tradeName}s typically work across NJ job sites, trade schools, and apprenticeships.`,
         skillGaps: skillGapsFor(tradeName),
         sampleJobs: getJobsForTrade(tradeName),
         actionPlan: actionPlanFor(tradeName, urgency),

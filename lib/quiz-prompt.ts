@@ -10,8 +10,8 @@ function optionLabel(questionId: string, value: string): string {
 }
 
 /**
- * Maps stored quiz slugs to API prompt fields per Fatima's implementation notes.
- * income + workCategory pass raw values; other fields use readable labels for Claude.
+ * Maps stored quiz slugs to API prompt fields.
+ * workCategory passes raw slug; other fields use readable labels for Claude.
  */
 export function buildPromptQuizAnswers(answers: QuizAnswers): PromptQuizAnswers {
   return {
@@ -19,7 +19,6 @@ export function buildPromptQuizAnswers(answers: QuizAnswers): PromptQuizAnswers 
     environment: optionLabel("environment", answers.environment ?? ""),
     strength: optionLabel("strength", answers.strength ?? ""),
     workCategory: answers.workCategory ?? "",
-    income: answers.income ?? "",
     urgency: optionLabel("urgency", answers.urgency ?? ""),
     physical: optionLabel("physical", answers.physical ?? ""),
   };
@@ -32,7 +31,6 @@ export function getRawQuizSlugs(answers: QuizAnswers) {
     environment: answers.environment ?? "",
     strength: answers.strength ?? "",
     workCategory: answers.workCategory ?? "",
-    income: answers.income ?? "",
     urgency: answers.urgency ?? "",
     physical: answers.physical ?? "",
   };

@@ -315,15 +315,14 @@
   .step-card {
     background: var(--white); border: 1px solid var(--border);
     border-radius: var(--radius-lg); padding: 28px;
-    transition: all 0.2s; position: relative; overflow: hidden;
+    position: relative; overflow: hidden;
+    cursor: default;
   }
   .step-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, var(--blue), var(--green));
-    opacity: 0; transition: opacity 0.2s;
+    opacity: 0.35;
   }
-  .step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-  .step-card:hover::before { opacity: 1; }
 
   .step-num {
     font-family: var(--font-dm-mono), monospace;
@@ -349,12 +348,55 @@
   .trade-pill {
     background: white; border: 1px solid var(--border);
     border-radius: var(--radius); padding: 20px 16px;
-    text-align: center; transition: all 0.2s; cursor: default;
+    text-align: center; transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: default; position: relative;
   }
-  .trade-pill:hover { border-color: var(--blue); box-shadow: var(--shadow-sm); }
+  .trade-pill:hover,
+  .trade-pill:focus-visible {
+    border-color: var(--blue);
+    box-shadow: var(--shadow-sm);
+    outline: none;
+    z-index: 2;
+  }
   .trade-pill-icon { font-size: 28px; margin-bottom: 8px; }
   .trade-pill-name { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
   .trade-pill-salary { font-size: 12px; color: var(--green); font-family: var(--font-dm-mono), monospace; font-weight: 500; }
+  .trade-pill-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
+    width: min(220px, 70vw);
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.45;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    box-shadow: var(--shadow-md);
+    z-index: 5;
+  }
+  .trade-pill-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--navy);
+  }
+  .trade-pill:hover .trade-pill-tooltip,
+  .trade-pill:focus-visible .trade-pill-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
 
   /* CTA Band */
   .cta-band {

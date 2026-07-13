@@ -39,15 +39,15 @@ export function NavigatorNav() {
     <nav className="nv-nav">
       <NavLogoLink />
       {pathname === "/navigator" || pathname === "/navigator/" ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="nav-cta-group">
           <button
             type="button"
-            className="nav-btn-outline"
+            className="btn-secondary btn-cta-how nav-btn-how"
             onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
           >
-            ⚙ How It Works
+            How It Works
           </button>
-          <Link href="/navigator/quiz" className="nav-cta">
+          <Link href="/navigator/quiz" className="btn-primary btn-cta-match nav-btn-match">
             Find My Match →
           </Link>
         </div>
@@ -79,7 +79,7 @@ export function NavigatorNav() {
         </div>
       ) : null}
       {pathname === "/navigator/login" ? (
-        <Link href="/navigator/quiz" className="nav-cta">
+        <Link href="/navigator/quiz" className="btn-primary btn-cta-match nav-btn-match">
           Find My Match →
         </Link>
       ) : null}

@@ -12,8 +12,10 @@ export function SampleJobsBlock({ jobs }: { jobs: JobOpportunity[] }) {
   return (
     <div className="job-sample-block">
       <div className="job-sample-head">
-        <span className="job-sample-title">Sample openings & programs</span>
-        <span className="job-sample-disclaimer">Demo data — confirm live dates with each employer or union.</span>
+        <span className="job-sample-title">Sample NJ openings & programs</span>
+        <span className="job-sample-disclaimer">
+          New Jersey–focused demo data — confirm live dates with each NJ employer, union, or trade school.
+        </span>
       </div>
       <ul className="job-sample-list">
         {jobs.map((j) => (
