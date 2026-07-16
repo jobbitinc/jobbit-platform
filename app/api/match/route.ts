@@ -116,7 +116,7 @@ export async function POST(req: Request) {
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
       model: MODEL,
-      max_tokens: 6000,
+      max_tokens: 4500,
       temperature: 0.3,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: buildUserPrompt(promptAnswers, slugs) }],

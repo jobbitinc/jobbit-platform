@@ -23,6 +23,25 @@ const tradePills = [
   ["✂️", "Cosmetologist", "$35K–$75K", "Provide hair, skin, and beauty services in salons and related client-facing settings."],
 ] as const;
 
+function CtaPair({ size = "default" }: { size?: "default" | "nav" }) {
+  const howClass = size === "nav" ? "btn-secondary btn-cta-how nav-btn-how" : "btn-secondary btn-cta-how";
+  const matchClass = size === "nav" ? "btn-primary btn-cta-match nav-btn-match" : "btn-primary btn-cta-match";
+  return (
+    <>
+      <button
+        type="button"
+        className={howClass}
+        onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+      >
+        How It Works
+      </button>
+      <Link href="/navigator/quiz" className={matchClass}>
+        Find My Match →
+      </Link>
+    </>
+  );
+}
+
 export function NavigatorLanding() {
   const { openAuth } = useCareer();
 
@@ -54,17 +73,8 @@ export function NavigatorLanding() {
             <br />
             Get matched to your top 3 trade careers, with salaries and your action plan.
           </p>
-          <div className="hero-actions">
-            <Link href="/navigator/quiz" className="btn-primary btn-cta-match">
-              Find My Match →
-            </Link>
-            <button
-              type="button"
-              className="btn-secondary btn-cta-how"
-              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              How It Works
-            </button>
+          <div className="hero-actions cta-pair">
+            <CtaPair />
           </div>
         </div>
         <div className="hero-visual phone-mockup">
@@ -117,9 +127,9 @@ export function NavigatorLanding() {
             <h3>Ready to take the next step?</h3>
             <p className="hero-ready-sub">Answer 6 Questions to get started.</p>
           </div>
-          <Link href="/navigator/quiz" className="btn-primary btn-cta-match">
-            Find My Match →
-          </Link>
+          <div className="cta-pair hero-ready-actions">
+            <CtaPair />
+          </div>
         </div>
       </div>
 
@@ -152,6 +162,42 @@ export function NavigatorLanding() {
         </div>
       </div>
 
+      <section className="section nj-launch-section" id="nj-launch">
+        <div className="section-tag">Rollout</div>
+        <h2 className="section-title">Launching First in New Jersey</h2>
+        <p className="section-sub nj-launch-sub">
+          We&apos;re helping New Jersey students discover careers, build skills, and connect with employers. More states
+          are on the way.
+        </p>
+        <ul className="nj-launch-status" aria-label="Launch status">
+          <li className="nj-launch-row live">
+            <span className="nj-status-dot" aria-hidden>
+              🟢
+            </span>
+            <span>
+              <strong>New Jersey</strong> — Live
+            </span>
+          </li>
+          <li className="nj-launch-row soon">
+            <span className="nj-status-dot" aria-hidden>
+              ⚪
+            </span>
+            <span>
+              <strong>More States</strong> — Coming Soon
+            </span>
+          </li>
+        </ul>
+        <div className="nj-launch-waitlist">
+          <p className="nj-waitlist-q">Not in New Jersey?</p>
+          <p className="nj-waitlist-copy">
+            Join our waitlist and be the first to know when Jobbit launches in your state.
+          </p>
+          <Link href="/" className="btn-primary btn-cta-match">
+            Join the waitlist →
+          </Link>
+        </div>
+      </section>
+
       <section className="section" id="how-it-works">
         <div className="section-tag">How it works</div>
         <h2 className="section-title">From quiz to career in minutes</h2>
@@ -180,7 +226,7 @@ export function NavigatorLanding() {
       <div className="bg-surface trades-section">
         <div className="section">
           <div className="section-tag">Your Pathway to Skilled Trades</div>
-          <h2 className="section-title">Seventeen careers. Zero college debt.</h2>
+          <h2 className="section-title">Find Your Trade. Build Your Future</h2>
           <div className="trades-grid">
             {tradePills.map(([icon, name, salary, blurb]) => (
               <div className="trade-pill" key={name} tabIndex={0}>
@@ -199,10 +245,8 @@ export function NavigatorLanding() {
       <div className="cta-band">
         <h2>Your Future Starts with 6 Questions</h2>
         <p>Join Jobbit — find your trade</p>
-        <div className="cta-band-actions">
-          <Link href="/navigator/quiz" className="btn-primary btn-cta-match">
-            Find My Match →
-          </Link>
+        <div className="cta-band-actions cta-pair">
+          <CtaPair />
           <button type="button" className="btn-secondary btn-cta-how" onClick={() => openAuth("signup")}>
             Create account
           </button>

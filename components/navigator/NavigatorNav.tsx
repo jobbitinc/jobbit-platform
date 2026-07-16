@@ -39,7 +39,7 @@ export function NavigatorNav() {
     <nav className="nv-nav">
       <NavLogoLink />
       {pathname === "/navigator" || pathname === "/navigator/" ? (
-        <div className="nav-cta-group">
+        <div className="nav-cta-group cta-pair">
           <button
             type="button"
             className="btn-secondary btn-cta-how nav-btn-how"

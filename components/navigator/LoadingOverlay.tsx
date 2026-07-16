@@ -1,48 +1,75 @@
 "use client";
 
 import { useCareer } from "./CareerContext";
-import { useEffect, useState } from "react";
-
-const PROGRESS_TICKS = [10, 22, 34, 48, 58, 68, 78, 86, 92] as const;
-const TICK_MS = 380;
+import { useEffect, useRef, useState } from "react";
 
 function statusForProgress(pct: number): string {
-  if (pct < 35) return "Analyzing your answers…";
-  if (pct < 65) return "Matching you to skilled trades…";
-  if (pct < 90) return "Building your career map…";
-  return "Finalizing your matches…";
+  if (pct < 30) return "Analyzing your answers…";
+  if (pct < 55) return "Matching you to New Jersey trades…";
+  if (pct < 80) return "Building your career map…";
+  if (pct < 96) return "Finalizing your matches…";
+  return "Almost ready…";
 }
 
+/**
+ * Smooth progress that keeps moving past ~90% instead of stalling,
+ * then snaps to 100% when matching finishes.
+ */
 export function LoadingOverlay() {
   const { isMatching } = useCareer();
   const [progress, setProgress] = useState(0);
+  const [finishing, setFinishing] = useState(false);
+  const wasMatching = useRef(false);
+  const progressRef = useRef(0);
 
   useEffect(() => {
-    if (!isMatching) {
-      setProgress(0);
-      return;
+    progressRef.current = progress;
+  }, [progress]);
+
+  useEffect(() => {
+    if (isMatching) {
+      wasMatching.current = true;
+      setFinishing(false);
+      setProgress(8);
+      progressRef.current = 8;
+
+      const started = performance.now();
+      const id = window.setInterval(() => {
+        const elapsed = performance.now() - started;
+        // Ease toward 97% over ~8s so the bar keeps moving while the API works
+        const target = Math.min(97, 8 + (89 * (1 - Math.exp(-elapsed / 2800))));
+        const next = Math.max(progressRef.current, Math.floor(target));
+        if (next !== progressRef.current) {
+          progressRef.current = next;
+          setProgress(next);
+        }
+      }, 80);
+
+      return () => window.clearInterval(id);
     }
 
-    setProgress(PROGRESS_TICKS[0]);
-    let tick = 1;
+    if (wasMatching.current) {
+      wasMatching.current = false;
+      setProgress(100);
+      setFinishing(true);
+      const t = window.setTimeout(() => {
+        setFinishing(false);
+        setProgress(0);
+      }, 280);
+      return () => window.clearTimeout(t);
+    }
 
-    const interval = window.setInterval(() => {
-      if (tick < PROGRESS_TICKS.length) {
-        setProgress(PROGRESS_TICKS[tick]);
-        tick += 1;
-      }
-    }, TICK_MS);
-
-    return () => clearInterval(interval);
+    setProgress(0);
+    setFinishing(false);
   }, [isMatching]);
 
-  if (!isMatching) return null;
+  if (!isMatching && !finishing) return null;
 
-  const pct = Math.min(progress, 92);
+  const pct = Math.min(progress, 100);
   const status = statusForProgress(pct);
 
   return (
-    <div className="loading-screen active" role="status" aria-live="polite" aria-busy="true">
+    <div className="loading-screen active" role="status" aria-live="polite" aria-busy={isMatching}>
       <div className="loading-shell">
         <div className="loading-pulse-wrap" aria-hidden>
           <span className="loading-ring r3" />
@@ -65,7 +92,7 @@ export function LoadingOverlay() {
           <div className="loading-progress-fill" style={{ width: `${pct}%` }} />
         </div>
 
-        <p className="loading-progress-hint">Hang tight — this usually takes a few seconds</p>
+        <p className="loading-progress-hint">Matching New Jersey pathways — usually just a few seconds</p>
       </div>
     </div>
   );
