@@ -192,7 +192,7 @@ export function NavigatorLanding() {
           <p className="nj-waitlist-copy">
             Join our waitlist and be the first to know when Jobbit launches in your state.
           </p>
-          <Link href="/" className="btn-primary btn-cta-match">
+          <Link href="/waitlist" className="btn-primary btn-cta-match">
             Join the waitlist →
           </Link>
         </div>
@@ -255,7 +255,7 @@ export function NavigatorLanding() {
 
       <footer className="nv-footer">
         © 2025 jobbit Inc. · AI Career Navigator for the Skilled Trades ·{" "}
-        <Link href="/" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline" }}>
+        <Link href="/waitlist" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline" }}>
           Join the waitlist
         </Link>
       </footer>

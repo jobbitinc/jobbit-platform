@@ -30,7 +30,7 @@ export function LoginPageClient() {
 
   useEffect(() => {
     if (prevAuthOpen.current && !authOpen && !user) {
-      router.replace("/navigator");
+      router.replace("/");
     }
     prevAuthOpen.current = authOpen;
   }, [authOpen, user, router]);
@@ -54,7 +54,7 @@ export function LoginPageClient() {
         <p style={{ fontSize: 14, color: "var(--text-3)" }}>
           <Link href="/navigator/quiz">Take the career quiz</Link>
           {" · "}
-          <Link href="/">Waitlist home</Link>
+          <Link href="/waitlist">Waitlist</Link>
         </p>
       </div>
     </div>

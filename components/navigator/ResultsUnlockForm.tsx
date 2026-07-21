@@ -55,7 +55,7 @@ export function ResultsUnlockForm() {
       </button>
       <p className="results-unlock-signin">
         Already have an account?{" "}
-        <button type="button" className="nv-inline-link" onClick={() => openAuth("login")}>
+        <button type="button" className="nv-inline-link" onClick={() => openAuth("login", "/navigator/dashboard")}>
           Sign in
         </button>
       </p>

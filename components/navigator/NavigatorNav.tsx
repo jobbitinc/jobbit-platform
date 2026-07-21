@@ -7,7 +7,7 @@ import { useCareer } from "./CareerContext";
 
 function NavLogoLink() {
   return (
-    <Link href="/navigator" className="nav-logo" aria-label="jobbit navigator home">
+    <Link href="/" className="nav-logo" aria-label="jobbit home">
       <Image
         src="/logo.png"
         alt=""
@@ -28,7 +28,7 @@ export function NavigatorNav() {
     return (
       <nav className="nv-nav">
         <NavLogoLink />
-        <Link href="/navigator" className="nav-cta">
+        <Link href="/" className="nav-cta">
           ← Exit
         </Link>
       </nav>
@@ -38,7 +38,7 @@ export function NavigatorNav() {
   return (
     <nav className="nv-nav">
       <NavLogoLink />
-      {pathname === "/navigator" || pathname === "/navigator/" ? (
+      {pathname === "/" || pathname === "/navigator" || pathname === "/navigator/" ? (
         <div className="nav-cta-group cta-pair">
           <button
             type="button"
@@ -59,10 +59,10 @@ export function NavigatorNav() {
           </Link>
         ) : (
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <button type="button" className="nav-text-link" onClick={() => openAuth("login")}>
+            <button type="button" className="nav-text-link" onClick={() => openAuth("login", "/navigator/dashboard")}>
               Sign in
             </button>
-            <button type="button" className="nav-cta" onClick={() => openAuth("signup")}>
+            <button type="button" className="nav-cta" onClick={() => openAuth("signup", "/navigator/dashboard")}>
               Save Results
             </button>
           </div>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "jobbit — AI Career Navigator",
   description:
     "Take the career quiz, get matched to New Jersey skilled trades, apprenticeships, and trade schools, and follow your personalized action plan.",
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

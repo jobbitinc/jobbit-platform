@@ -1,5 +1,6 @@
-import { NavigatorLanding } from "@/components/navigator/NavigatorLanding";
+import { redirect } from "next/navigation";
 
-export default function NavigatorHomePage() {
-  return <NavigatorLanding />;
+/** Legacy landing URL — main site is now `/`. */
+export default function NavigatorIndexRedirect() {
+  redirect("/");
 }
