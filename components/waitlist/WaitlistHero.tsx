@@ -183,7 +183,8 @@ function WaitlistFormBlock({
     return () => document.removeEventListener("keydown", onKey);
   }, [success, onSubmit]);
 
-  const siteUrl = typeof window !== "undefined" ? getPublicSiteUrl() : "https://jobbit.vercel.app";
+  const siteUrl =
+    typeof window !== "undefined" ? `${getPublicSiteUrl().replace(/\/+$/, "")}/waitlist` : "https://jobbit.vercel.app/waitlist";
   const tweet = encodeURIComponent(
     `Just joined the jobbit waitlist — an AI that matches you with trade careers & apprenticeships. Real $100K careers. #jobbit`,
   );

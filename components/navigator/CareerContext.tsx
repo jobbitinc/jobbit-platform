@@ -428,7 +428,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
     setMatches(null);
     setCompletedSteps({});
     showToast("Signed out successfully", "success");
-    router.push("/navigator");
+    router.push("/");
   }, [router, showToast]);
 
   const toggleStep = useCallback(

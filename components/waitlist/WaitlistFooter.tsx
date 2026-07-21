@@ -12,7 +12,7 @@ export function WaitlistFooter() {
         className="wl-footer-logo-img"
       />
       <p className="footer-copy" style={{ marginBottom: 8 }}>
-        <Link href="/navigator" style={{ color: "inherit", textDecoration: "underline" }}>
+        <Link href="/" style={{ color: "inherit", textDecoration: "underline" }}>
           Try the Career Navigator
         </Link>
       </p>

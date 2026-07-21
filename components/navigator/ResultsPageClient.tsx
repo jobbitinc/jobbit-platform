@@ -151,7 +151,7 @@ export function ResultsPageClient() {
             match={m}
             anonymous={anonymous}
             locked={anonymous && i > 0}
-            onUnlock={() => openAuth("signup")}
+            onUnlock={() => openAuth("signup", "/navigator/dashboard")}
           />
         ))}
         {anonymous ? (
