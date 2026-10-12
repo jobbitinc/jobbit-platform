@@ -109,9 +109,43 @@ function validateTradeMatch(raw: unknown, expectedRank: number, answers: PromptQ
   };
 }
 
+const KEYWORD_STOPWORDS = new Set([
+  "about", "and", "are", "being", "but", "can", "day", "days", "every", "for", "from", "get",
+  "got", "have", "how", "i'm", "into", "just", "like", "more", "most", "mostly", "much", "my",
+  "not", "of", "on", "or", "out", "same", "something", "than", "that", "the", "them", "they",
+  "things", "this", "time", "two", "want", "what", "with", "work", "working", "yet", "you", "your",
+]);
+
+function normalizeText(text: string): string {
+  return text.toLowerCase().replace(/[\u2018\u2019]/g, "'").replace(/[\u2013\u2014]/g, "-");
+}
+
+function keywordStem(word: string): string {
+  return word.length > 5 ? word.slice(0, 5) : word.replace(/s$/, "");
+}
+
+function answerKeywordStems(answer: string): string[] {
+  const words = normalizeText(answer)
+    .replace(/[^a-z0-9$'\s-]/g, " ")
+    .split(/[\s-]+/)
+    .filter((w) => w.length >= 4 && !KEYWORD_STOPWORDS.has(w));
+  return [...new Set(words.map(keywordStem))];
+}
+
 function whyMatchReferencesAnswers(whyLower: string, answers: PromptQuizAnswers): boolean {
+  whyLower = normalizeText(whyLower);
+  const whyStems = new Set(
+    whyLower
+      .replace(/[^a-z0-9$'\s-]/g, " ")
+      .split(/[\s-]+/)
+      .filter((w) => w.length >= 3)
+      .map(keywordStem),
+  );
   return Object.values(answers).some((answer) => {
-    const normalized = answer.toLowerCase();
+    const normalized = normalizeText(answer);
+    const stems = answerKeywordStems(answer);
+    const hits = stems.filter((stem) => whyStems.has(stem)).length;
+    if (stems.length > 0 && hits >= Math.min(2, stems.length)) return true;
     if (whyLower.includes(normalized)) return true;
     if (normalized.includes("-") && whyLower.includes(normalized.replace(/-/g, " "))) return true;
     const incomeBand = normalized.match(/\$[\d]+k/i);

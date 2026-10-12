@@ -9,6 +9,7 @@ import {
 } from "@/lib/career/validation";
 
 const MODEL = "claude-sonnet-4-6";
+const MAX_ATTEMPTS = 2;
 
 const SYSTEM_PROMPT = `You are Jobbit, an expert AI career navigator specializing in skilled trades careers for young people ages 16–30 in New Jersey. You have deep knowledge of New Jersey trade schools, county colleges, registered apprenticeships, union locals, NJDOL workforce programs, certification requirements, salary ranges, and career progression for skilled trades in New Jersey.
 
@@ -114,21 +115,42 @@ export async function POST(req: Request) {
     const promptAnswers = toPromptAnswers(quizAnswers);
     const slugs = getRawQuizSlugs(quizAnswers);
     const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: 4500,
-      temperature: 0.3,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: buildUserPrompt(promptAnswers, slugs) }],
-    });
+    const messages: Anthropic.MessageParam[] = [
+      { role: "user", content: buildUserPrompt(promptAnswers, slugs) },
+    ];
 
-    const textBlock = response.content.find((part) => part.type === "text");
-    if (!textBlock) {
-      throw new Error("Model response did not include text output");
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      const response = await anthropic.messages.create({
+        model: MODEL,
+        max_tokens: 4500,
+        temperature: 0.3,
+        system: SYSTEM_PROMPT,
+        messages,
+      });
+
+      const textBlock = response.content.find((part) => part.type === "text");
+      if (!textBlock) {
+        throw new Error("Model response did not include text output");
+      }
+      const text = textBlock.text.trim();
+      try {
+        const validated = validateMatchResultSet(parseJsonText(text), promptAnswers);
+        return NextResponse.json({ ok: true, data: validated });
+      } catch (validationError) {
+        lastError = validationError;
+        const reason = validationError instanceof Error ? validationError.message : "invalid response";
+        console.warn(`[match] attempt ${attempt} failed validation: ${reason}`);
+        messages.push(
+          { role: "assistant", content: text },
+          {
+            role: "user",
+            content: `Your response failed validation: ${reason}. Return the full corrected JSON only. Each whyMatch must explicitly mention the user's own quiz answers using their wording.`,
+          },
+        );
+      }
     }
-    const parsed = parseJsonText(textBlock.text.trim());
-    const validated = validateMatchResultSet(parsed, promptAnswers);
-    return NextResponse.json({ ok: true, data: validated });
+    throw lastError;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[match] generation failed:", message);
