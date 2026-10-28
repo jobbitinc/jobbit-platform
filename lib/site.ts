@@ -1,3 +1,12 @@
+/** In-app route of the Jobbit career navigator (the student-facing product). */
+export const APP_HOME_PATH = "/jobbit";
+
+/**
+ * Public URL of the Jobbit application, used by "Launch Jobbit" links on the corporate site.
+ * Set NEXT_PUBLIC_JOBBIT_APP_URL when the app moves to its own domain.
+ */
+export const JOBBIT_APP_URL = process.env.NEXT_PUBLIC_JOBBIT_APP_URL?.trim() || APP_HOME_PATH;
+
 export function getPublicSiteUrl(): string {
   if (typeof window !== "undefined") {
     return window.location.origin;

@@ -7,6 +7,7 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow",
   display: "swap",
 });
+import { Analytics } from "@/components/site/Analytics";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -45,6 +46,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"),
   title: "jobbit — AI Career Navigator",
   description:
     "AI navigator that matches young people with high-paying trade careers and union apprenticeships.",
@@ -64,7 +66,10 @@ export default function RootLayout({
       lang="en"
       className={`${barlowCondensed.variable} ${bebasNeue.variable} ${dmSans.variable} ${dmMono.variable} ${dmSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

@@ -23,7 +23,7 @@ import { generateFallbackResults } from "@/lib/match-fallback";
 import { toPromptAnswers, validateMatchResultSet, validateQuizAnswers } from "@/lib/career/validation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { canSendAuthEmail, formatAuthError, markAuthEmailSent } from "@/lib/auth-email-guard";
-import { getAuthEmailRedirectOrigin } from "@/lib/site";
+import { APP_HOME_PATH, getAuthEmailRedirectOrigin } from "@/lib/site";
 
 export type SessionUser = { id: string; email: string; name: string };
 type ToastTone = "info" | "success" | "error";
@@ -428,7 +428,7 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
     setMatches(null);
     setCompletedSteps({});
     showToast("Signed out successfully", "success");
-    router.push("/");
+    router.push(APP_HOME_PATH);
   }, [router, showToast]);
 
   const toggleStep = useCallback(

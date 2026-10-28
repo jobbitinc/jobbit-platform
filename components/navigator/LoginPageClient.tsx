@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { APP_HOME_PATH } from "@/lib/site";
 import { useCareer } from "./CareerContext";
 
 export function LoginPageClient() {
@@ -30,7 +31,7 @@ export function LoginPageClient() {
 
   useEffect(() => {
     if (prevAuthOpen.current && !authOpen && !user) {
-      router.replace("/");
+      router.replace(APP_HOME_PATH);
     }
     prevAuthOpen.current = authOpen;
   }, [authOpen, user, router]);
