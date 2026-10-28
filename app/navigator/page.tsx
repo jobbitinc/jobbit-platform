@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { APP_HOME_PATH } from "@/lib/site";
 
-/** Legacy landing URL — main site is now `/`. */
+/** Legacy landing URL — the app landing now lives at `/jobbit`. */
 export default function NavigatorIndexRedirect() {
-  redirect("/");
+  redirect(APP_HOME_PATH);
 }

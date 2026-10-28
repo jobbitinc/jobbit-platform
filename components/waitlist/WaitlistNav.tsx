@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { APP_HOME_PATH } from "@/lib/site";
 
 const easeSmooth = [0.22, 1, 0.36, 1] as const;
 
@@ -13,7 +14,7 @@ export function WaitlistNav() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: easeSmooth }}
     >
-      <a href="/" className="wl-logo-link" aria-label="jobbit home">
+      <a href={APP_HOME_PATH} className="wl-logo-link" aria-label="jobbit home">
         <Image
           src="/logo.png"
           alt="jobbit"

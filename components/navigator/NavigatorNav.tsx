@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { APP_HOME_PATH } from "@/lib/site";
 import { useCareer } from "./CareerContext";
 
 function NavLogoLink() {
   return (
-    <Link href="/" className="nav-logo" aria-label="jobbit home">
+    <Link href={APP_HOME_PATH} className="nav-logo" aria-label="jobbit home">
       <Image
         src="/logo.png"
         alt=""
@@ -28,7 +29,7 @@ export function NavigatorNav() {
     return (
       <nav className="nv-nav">
         <NavLogoLink />
-        <Link href="/" className="nav-cta">
+        <Link href={APP_HOME_PATH} className="nav-cta">
           ← Exit
         </Link>
       </nav>
@@ -38,7 +39,7 @@ export function NavigatorNav() {
   return (
     <nav className="nv-nav">
       <NavLogoLink />
-      {pathname === "/" || pathname === "/navigator" || pathname === "/navigator/" ? (
+      {pathname === APP_HOME_PATH || pathname === "/navigator" || pathname === "/navigator/" ? (
         <div className="nav-cta-group cta-pair">
           <button
             type="button"

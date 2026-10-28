@@ -1,0 +1,139 @@
+/* Corporate site (app/(site)) — decorative backgrounds and motion that Tailwind utilities don't cover. */
+
+[data-site] {
+  font-family: var(--font-body);
+}
+
+[data-site] ::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+.site-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 40%, transparent 100%);
+}
+
+.site-grid-bg-light {
+  background-image:
+    linear-gradient(rgba(6, 10, 23, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 10, 23, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+.site-glow {
+  filter: blur(90px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.site-text-gradient {
+  background: linear-gradient(100deg, var(--color-lime) 0%, #c8f56b 40%, #7fd4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.site-fade-up {
+  animation: site-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.site-fade-up-delay {
+  animation: site-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+@keyframes site-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.site-float {
+  animation: site-float 7s ease-in-out infinite;
+}
+.site-float-delay {
+  animation: site-float 8s ease-in-out -3s infinite;
+}
+@keyframes site-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.site-pulse-dot {
+  animation: site-pulse 2.2s ease-out infinite;
+}
+@keyframes site-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(151, 224, 26, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(151, 224, 26, 0);
+  }
+}
+
+.site-flow-line {
+  background-image: linear-gradient(90deg, var(--color-lime) 50%, transparent 50%);
+  background-size: 14px 2px;
+  animation: site-flow 1.2s linear infinite;
+}
+.site-flow-line-v {
+  background-image: linear-gradient(180deg, var(--color-lime) 50%, transparent 50%);
+  background-size: 2px 14px;
+  animation: site-flow-v 1.2s linear infinite;
+}
+@keyframes site-flow {
+  to {
+    background-position: 14px 0;
+  }
+}
+@keyframes site-flow-v {
+  to {
+    background-position: 0 14px;
+  }
+}
+
+.site-marquee {
+  animation: site-marquee 40s linear infinite;
+}
+@keyframes site-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.site-bar-grow {
+  transform-origin: left;
+  animation: site-bar-grow 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes site-bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-fade-up,
+  .site-fade-up-delay,
+  .site-float,
+  .site-float-delay,
+  .site-pulse-dot,
+  .site-flow-line,
+  .site-flow-line-v,
+  .site-marquee,
+  .site-bar-grow {
+    animation: none;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
