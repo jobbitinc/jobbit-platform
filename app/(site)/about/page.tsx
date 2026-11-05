@@ -5,6 +5,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { ButtonLink, Container, FeatureCard, SectionHeading } from "@/components/site/ui";
 import { founder } from "@/lib/marketing/content";
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About Jobbit",
@@ -142,10 +143,18 @@ export default function AboutPage() {
           <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
             <Reveal>
               <SectionHeading eyebrow="Our story" title="Why we started Jobbit" />
-              <blockquote className="mt-10 border-l-4 border-lime pl-6">
+              <blockquote className="mt-10 rounded-2xl border-l-4 border-lime bg-white p-6 shadow-sm">
                 <p className="font-display text-xl font-medium leading-snug text-ink">&ldquo;{founder.quote}&rdquo;</p>
-                <footer className="mt-3 text-sm text-slate-ink">
-                  {founder.name}, {founder.role}
+                <footer className="mt-4 flex items-center gap-3.5">
+                  {founder.photo ? (
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-line shadow-sm">
+                      <Image src={founder.photo} alt={founder.name} fill sizes="48px" className="object-cover object-top" />
+                    </div>
+                  ) : null}
+                  <div>
+                    <p className="font-display font-semibold text-ink">{founder.name}</p>
+                    <p className="text-xs font-medium text-lime-deep">{founder.role}</p>
+                  </div>
                 </footer>
               </blockquote>
             </Reveal>

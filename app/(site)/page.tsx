@@ -20,7 +20,8 @@ import {
 } from "@/components/site/icons";
 import { Reveal } from "@/components/site/Reveal";
 import { ButtonLink, Container, Eyebrow, FeatureCard, SectionHeading } from "@/components/site/ui";
-import { company, socialLinks } from "@/lib/marketing/content";
+import { company, founder, socialLinks } from "@/lib/marketing/content";
+import Image from "next/image";
 import { JOBBIT_APP_URL } from "@/lib/site";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -96,7 +97,7 @@ const jsonLd = {
   description: company.description,
   email: company.email,
   logo: "/logo.png",
-  sameAs: socialLinks.map((s) => s.href),
+  sameAs: socialLinks.map((s) => s.href).filter(Boolean) as string[],
 };
 
 export default function HomePage() {
@@ -375,7 +376,7 @@ export default function HomePage() {
         <Container>
           <Reveal>
             <div className="grid overflow-hidden rounded-[2rem] border border-line lg:grid-cols-2">
-              <div className="relative min-h-[280px] overflow-hidden bg-gradient-to-br from-electric via-violet to-ink p-10 text-white">
+              <div className="relative flex min-h-[300px] flex-col justify-between overflow-hidden bg-gradient-to-br from-electric via-violet to-ink p-10 text-white">
                 <div className="site-grid-bg absolute inset-0" aria-hidden />
                 <Globe size={120} className="absolute -bottom-6 -right-6 text-white/10" />
                 <div className="relative">
@@ -383,6 +384,15 @@ export default function HomePage() {
                   <p className="mt-6 max-w-md font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
                     A generation that knows where it&apos;s going, and how to get there.
                   </p>
+                </div>
+                <div className="relative mt-8 flex items-center gap-3.5 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-md max-w-sm">
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/20">
+                    <Image src={founder.photo || "/fatima.jpg"} alt={founder.name} fill sizes="48px" className="object-cover object-top" />
+                  </div>
+                  <div>
+                    <p className="font-display text-sm font-semibold text-white">{founder.name}</p>
+                    <p className="text-xs text-lime">{founder.role} &middot; 30+ yrs youth &amp; workforce</p>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col justify-center bg-white p-10">

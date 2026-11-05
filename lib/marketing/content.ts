@@ -17,12 +17,12 @@ export const company = {
 
 export type SocialNetwork = "linkedin" | "instagram" | "x" | "tiktok" | "youtube";
 
-export const socialLinks: { network: SocialNetwork; label: string; href: string }[] = [
-  { network: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/company/jobbit" },
-  { network: "instagram", label: "Instagram", href: "https://www.instagram.com/jobbitapp" },
-  { network: "x", label: "X (Twitter)", href: "https://x.com/jobbitapp" },
-  { network: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@jobbitapp" },
-  { network: "youtube", label: "YouTube", href: "https://www.youtube.com/@jobbitapp" },
+export const socialLinks: { network: SocialNetwork; label: string; href?: string }[] = [
+  { network: "linkedin", label: "LinkedIn" },
+  { network: "instagram", label: "Instagram" },
+  { network: "x", label: "X (Twitter)" },
+  { network: "tiktok", label: "TikTok" },
+  { network: "youtube", label: "YouTube" },
 ];
 
 export const solutionLinks = [
@@ -70,15 +70,18 @@ export type TeamMember = {
 };
 
 export const founder: TeamMember & { story: string[]; quote: string } = {
-  name: "Founder Name",
+  name: "Fatima Scipio",
   role: "Founder & CEO",
-  bio: "Short leadership bio: background, previous roles, and the experience that led to starting Jobbit.",
+  photo: "/fatima.jpg",
+  bio: "Fatima holds a Master's degree in Urban Affairs with a concentration in Nonprofit Management and Youth Development. She brings three decades of frontline experience to Jobbit and a deep understanding of the gap between young people, opportunity, and the systems designed to connect the two.",
   story: [
-    "Jobbit started with a simple observation: young people are asked to make big decisions about their future long before anyone shows them what the world of work actually looks like.",
-    "Schools want to help, employers need talent, and communities are investing in youth opportunity, but these efforts rarely connect in a way students can see or act on.",
-    "We built Jobbit to close that gap: an AI-powered platform that meets students where they are, helps them discover what they're good at, and connects them to real pathways, real employers, and real next steps.",
+    "For more than 30 years, Fatima Scipio has been connecting young people to possibility. Her work began with young people in her Bronx, New York community and continued through a career spanning education, youth development, workforce development, nonprofit leadership, community impact, and entrepreneurship. From serving as a middle school teacher to leading college and career programming, she has spent her career helping young people see opportunities they may not have known existed.",
+    "The idea for Jobbit became personal when Fatima's nephew called asking for help finding a trade school or job. After spending hours searching through disconnected websites, job boards, training programs, and employment opportunities, she recognized a larger problem: young people were being asked to navigate a workforce system that was never designed around them.",
+    "She had seen the same challenge firsthand while serving as Director of College and Career Services at the Boys & Girls Club of Mercer County. When students skipped career workshops, their explanation was often simple: “I don't know what I want to do.” Fatima understood that these young people weren't lacking ambition—they needed greater exposure to what was possible and a clearer roadmap for getting there.",
+    "That insight became Jobbit. Designed for young people ages 16–24 (both high school and out-of-school youth), Jobbit is creating an AI-powered career-readiness and workforce ecosystem that helps youth discover their talents and gifts, understand potential pathways, build career readiness, and connect to opportunities.",
+    "Fatima's vision is to scale Jobbit into the nation's leading youth workforce platform—creating infrastructure that can serve young people while connecting schools, employers, and workforce systems around the next generation of talent.",
   ],
-  quote: "Every student deserves a clear view of their future and a real path to get there.",
+  quote: "Every young person deserves to see what is possible.",
 };
 
 export const leadershipTeam: TeamMember[] = [
