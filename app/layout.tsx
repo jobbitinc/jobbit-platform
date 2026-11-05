@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Bebas_Neue, DM_Mono, DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Analytics } from "@/components/site/Analytics";
+import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -7,8 +9,6 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow",
   display: "swap",
 });
-import { Analytics } from "@/components/site/Analytics";
-import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",

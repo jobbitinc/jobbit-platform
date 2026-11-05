@@ -30,11 +30,28 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function Avatar({ member, index, className }: { member: TeamMember; index: number; className?: string }) {
+function Avatar({
+  member,
+  index,
+  className,
+  priority = false,
+}: {
+  member: TeamMember;
+  index: number;
+  className?: string;
+  priority?: boolean;
+}) {
   if (member.photo) {
     return (
       <div className={cn("relative overflow-hidden bg-mist", className)}>
-        <Image src={member.photo} alt={member.name} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover" />
+        <Image
+          src={member.photo}
+          alt={member.name}
+          fill
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, 480px"
+          className="object-cover object-top"
+        />
       </div>
     );
   }
@@ -99,8 +116,8 @@ export default function TeamPage() {
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal>
               <div className="relative mx-auto max-w-md lg:mx-0">
-                <div className="absolute -inset-4 rotate-3 rounded-[2.5rem] bg-lime" aria-hidden />
-                <Avatar member={founder} index={0} className="relative aspect-[4/5] w-full rounded-[2rem] text-7xl" />
+                <div className="absolute -inset-4 rotate-3 rounded-[2.5rem] bg-lime shadow-xl" aria-hidden />
+                <Avatar member={founder} index={0} priority className="relative aspect-[4/5] w-full rounded-[2rem] text-7xl shadow-2xl" />
                 <div className="absolute -bottom-6 -right-4 rounded-2xl bg-ink px-5 py-4 text-white shadow-2xl sm:-right-8">
                   <p className="font-display text-lg font-semibold">{founder.name}</p>
                   <p className="text-sm text-lime">{founder.role}</p>
@@ -115,8 +132,9 @@ export default function TeamPage() {
                 ))}
               </div>
               <p className="mt-6 text-[15px] leading-relaxed text-slate-ink">{founder.bio}</p>
-              <blockquote className="mt-8 rounded-2xl bg-mist p-6">
+              <blockquote className="mt-8 rounded-2xl bg-mist p-6 border-l-4 border-lime">
                 <p className="font-display text-xl font-medium leading-snug text-ink">&ldquo;{founder.quote}&rdquo;</p>
+                <p className="mt-2 text-sm font-semibold text-slate-ink">&mdash; {founder.name}, {founder.role}</p>
               </blockquote>
             </Reveal>
           </div>

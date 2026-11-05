@@ -25,18 +25,17 @@ export function SiteFooter() {
               <Image src="/logo.png" alt="Jobbit" width={240} height={48} className="h-9 w-auto" />
             </Link>
             <p className="mt-5 text-[15px] leading-relaxed text-white/60">{company.tagline}</p>
+            {/* Social media icons — displayed non-clickable until official handles launch */}
             <ul className="mt-6 flex flex-wrap gap-2" aria-label="Jobbit on social media">
               {socialLinks.map((s) => (
                 <li key={s.network}>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <span
                     aria-label={s.label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-lime hover:text-lime"
+                    title={s.label}
+                    className="inline-flex h-10 w-10 cursor-default select-none items-center justify-center rounded-full border border-white/10 text-white/40"
                   >
                     <SocialIcon network={s.network} />
-                  </a>
+                  </span>
                 </li>
               ))}
             </ul>
