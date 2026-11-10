@@ -8,7 +8,7 @@ import {
   validateQuizAnswers,
 } from "@/lib/career/validation";
 
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "claude-haiku-4-5-20251001";
 const MAX_ATTEMPTS = 2;
 
 const SYSTEM_PROMPT = `You are Jobbit, an expert AI career navigator specializing in skilled trades careers for young people ages 16–30 in New Jersey. You have deep knowledge of New Jersey trade schools, county colleges, registered apprenticeships, union locals, NJDOL workforce programs, certification requirements, salary ranges, and career progression for skilled trades in New Jersey.
@@ -81,21 +81,28 @@ Return exactly 3 matches ranked by fit. Follow the JSON schema below precisely.
 ]
 }
 
-Schema rules must be reinforced
-
+Schema rules must be reinforced:
 - matches array must always contain exactly 3 objects
 - rank values must be 1, 2, and 3 — no duplicates
 - matchScore must be an integer between 65 and 95
 - actionPlan array must always contain exactly 6 step objects per match
 - skillGaps array must always contain exactly 3 strings
-- whyMatch must reference at least one of the user's actual quiz answers — reject and retry if it does not
+- whyMatch must reference at least one of the user's actual quiz answers
 - Steps in actionPlan must be ordered logically — certifications before applications, research before contact`;
 }
 
 function parseJsonText(raw: string): unknown {
+  const cleaned = raw
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
   try {
-    return JSON.parse(raw);
+    return JSON.parse(cleaned);
   } catch {
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
     throw new Error("Model returned non-JSON content");
   }
 }
@@ -124,7 +131,6 @@ export async function POST(req: Request) {
       const response = await anthropic.messages.create({
         model: MODEL,
         max_tokens: 4500,
-        temperature: 0.3,
         system: SYSTEM_PROMPT,
         messages,
       });

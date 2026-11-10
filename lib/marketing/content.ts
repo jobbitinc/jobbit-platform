@@ -11,7 +11,7 @@ export const company = {
   description:
     "Jobbit is an AI-powered career readiness platform that helps high school students and emerging talent discover career pathways, understand their skills, and prepare for the workforce, while connecting schools, employers, and workforce partners to the next generation of talent.",
   email: "hello@jobbitapp.com",
-  partnershipsEmail: "partners@jobbitapp.com",
+  partnershipsEmail: "partner@jobbitapp.com",
   location: "New Jersey, USA",
 };
 
@@ -38,7 +38,7 @@ export const solutionLinks = [
 export const primaryNavLinks = [
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
-  { href: "/team", label: "Team" },
+  { href: "/team", label: "The Vision Behind Jobbit" },
 ];
 
 export const inquiryTypes = [
@@ -77,7 +77,7 @@ export const founder: TeamMember & { story: string[]; quote: string } = {
   story: [
     "For more than 30 years, Fatima Scipio has been connecting young people to possibility. Her work began with young people in her Bronx, New York community and continued through a career spanning education, youth development, workforce development, nonprofit leadership, community impact, and entrepreneurship. From serving as a middle school teacher to leading college and career programming, she has spent her career helping young people see opportunities they may not have known existed.",
     "The idea for Jobbit became personal when Fatima's nephew called asking for help finding a trade school or job. After spending hours searching through disconnected websites, job boards, training programs, and employment opportunities, she recognized a larger problem: young people were being asked to navigate a workforce system that was never designed around them.",
-    "She had seen the same challenge firsthand while serving as Director of College and Career Services at the Boys & Girls Club of Mercer County. When students skipped career workshops, their explanation was often simple: “I don't know what I want to do.” Fatima understood that these young people weren't lacking ambition—they needed greater exposure to what was possible and a clearer roadmap for getting there.",
+    "She had seen the same challenge firsthand while serving as Director of College and Career Services at a local nonprofit. When students skipped career workshops, their explanation was often simple: “I don't know what I want to do.” Fatima understood that these young people weren't lacking ambition, they needed greater exposure to what was possible and a clearer roadmap for getting there.",
     "That insight became Jobbit. Designed for young people ages 16–24 (both high school and out-of-school youth), Jobbit is creating an AI-powered career-readiness and workforce ecosystem that helps youth discover their talents and gifts, understand potential pathways, build career readiness, and connect to opportunities.",
     "Fatima's vision is to scale Jobbit into the nation's leading youth workforce platform—creating infrastructure that can serve young people while connecting schools, employers, and workforce systems around the next generation of talent.",
   ],

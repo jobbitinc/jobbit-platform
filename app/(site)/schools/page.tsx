@@ -69,7 +69,8 @@ const roles = [
   },
 ];
 
-const rollout = [
+// BACKUP: Kept for when Jobbit scales
+export const rolloutBackup = [
   { n: "01", title: "Discovery call", text: "We learn about your students, programs, and goals." },
   { n: "02", title: "Plan & onboard", text: "We tailor the rollout and set up your educators." },
   { n: "03", title: "Launch with students", text: "Students start exploring with in-class or advisory sessions." },
@@ -107,7 +108,7 @@ export default function SchoolsPage() {
               "Personal career action plans",
               "Connections to employers and local programs",
             ]}
-            footer={<p className="text-sm text-white/55">Built for middle and high school, CTE programs, and districts.</p>}
+            footer={<p className="text-sm text-white/55">Built for high school and out of school youth.</p>}
           />
         }
       />
@@ -152,30 +153,7 @@ export default function SchoolsPage() {
         </Container>
       </section>
 
-      <section className="py-20 sm:py-28">
-        <Container>
-          <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <SectionHeading
-              eyebrow="Getting started"
-              title="Up and running without the heavy lift."
-              description="We partner with your team from the first conversation to launch day and beyond, so Jobbit fits into the programs you already run."
-            />
-            <ol className="grid gap-4 sm:grid-cols-2">
-              {rollout.map((r, i) => (
-                <li key={r.n}>
-                  <Reveal delay={i * 0.06}>
-                    <div className="h-full rounded-3xl border border-line p-6">
-                      <span className="font-mono-ui text-sm text-lime-deep">{r.n}</span>
-                      <p className="mt-3 font-display text-lg font-semibold text-ink">{r.title}</p>
-                      <p className="mt-1.5 text-[15px] leading-relaxed text-slate-ink">{r.text}</p>
-                    </div>
-                  </Reveal>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </Container>
-      </section>
+      {/* BACKUP: Getting started rollout section kept for when Jobbit scales */}
 
       <CtaBand
         title="See Jobbit in action at your school."

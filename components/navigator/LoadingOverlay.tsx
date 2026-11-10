@@ -36,8 +36,8 @@ export function LoadingOverlay() {
       const started = performance.now();
       const id = window.setInterval(() => {
         const elapsed = performance.now() - started;
-        // Ease toward 97% over ~8s so the bar keeps moving while the API works
-        const target = Math.min(97, 8 + (89 * (1 - Math.exp(-elapsed / 2800))));
+        // Ease smoothly toward 96% so the bar keeps visibly moving while the API works
+        const target = Math.min(96, 8 + (88 * (1 - Math.exp(-elapsed / 10000))));
         const next = Math.max(progressRef.current, Math.floor(target));
         if (next !== progressRef.current) {
           progressRef.current = next;

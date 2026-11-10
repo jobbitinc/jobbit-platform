@@ -94,7 +94,6 @@ export default function EmployersPage() {
               "Early access to motivated emerging talent",
               "Brand awareness with students and schools",
               "A stronger, more diverse talent pipeline",
-              "Measurable community impact",
             ]}
           />
         }

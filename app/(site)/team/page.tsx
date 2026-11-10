@@ -8,9 +8,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Founder & Team",
+  title: "The Vision Behind Jobbit",
   description:
-    "Meet the founder, leadership team, and advisors behind Jobbit, and the purpose driving our work to prepare the next generation for the world of work.",
+    "Learn about the founder, vision, and mission driving Jobbit to prepare the next generation for the changing world of work.",
   alternates: { canonical: "/team" },
 };
 
@@ -69,7 +69,8 @@ function Avatar({
   );
 }
 
-function MemberCard({ member, index, compact = false }: { member: TeamMember; index: number; compact?: boolean }) {
+// BACKUP: MemberCard component kept for when full leadership and advisors are confirmed
+export function MemberCardBackup({ member, index, compact = false }: { member: TeamMember; index: number; compact?: boolean }) {
   return (
     <div className="group h-full overflow-hidden rounded-3xl border border-line bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-30px_rgba(6,10,23,0.35)]">
       <Avatar member={member} index={index} className={cn("w-full", compact ? "aspect-[4/3] text-4xl" : "aspect-square text-5xl")} />
@@ -101,10 +102,10 @@ export default function TeamPage() {
   return (
     <>
       <PageHero
-        eyebrow="Founder & team"
+        eyebrow="The vision behind Jobbit"
         title={
           <>
-            The people building the <span className="site-text-gradient">future of career readiness.</span>
+            The Vision Behind <span className="site-text-gradient">Jobbit.</span>
           </>
         }
         description="We're educators, technologists, and workforce builders united by one belief: every young person deserves a clear path to a meaningful career."
@@ -141,42 +142,39 @@ export default function TeamPage() {
         </Container>
       </section>
 
-      {/* Leadership */}
+      {/* Building What's Next */}
       <section className="bg-mist py-20 sm:py-28">
         <Container>
-          <SectionHeading eyebrow="Leadership" title="Our team" />
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {leadershipTeam.map((m, i) => (
-              <Reveal key={`${m.role}-${i}`} delay={i * 0.06}>
-                <MemberCard member={m} index={i + 1} />
-              </Reveal>
-            ))}
-          </div>
+          <Reveal>
+            <div className="max-w-3xl">
+              <SectionHeading
+                eyebrow="Our future"
+                title="Building What's Next"
+              />
+              <div className="mt-6 space-y-4 text-lg leading-relaxed text-slate-ink">
+                <p className="font-medium text-ink">
+                  Jobbit is a founder-led technology company bringing together innovation, education, and workforce development to help the next generation navigate their career futures.
+                </p>
+                <p>
+                  As we grow, we&apos;re building relationships with educators, employers, technology experts, and industry leaders who share our commitment to expanding access to opportunity.
+                </p>
+              </div>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
-      {/* Advisors */}
-      <section className="py-20 sm:py-28">
-        <Container>
-          <SectionHeading
-            eyebrow="Advisors"
-            title="Guided by experts in education, workforce, and technology."
-          />
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {advisors.map((m, i) => (
-              <Reveal key={`${m.role}-${i}`} delay={(i % 4) * 0.06}>
-                <MemberCard member={m} index={i + 2} compact />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/*
+        BACKUP: Leadership and Advisors content kept for when full team is confirmed:
+        - leadershipTeam: Head of Product, Head of Partnerships, Head of Engineering
+        - advisors: Education Advisor, Workforce Advisor, Technology Advisor, Industry Advisor
+      */}
 
       {/* Join */}
       <section className="pb-4">
         <Container>
           <Reveal>
-            <div className="flex flex-col gap-6 rounded-[2rem] border border-line bg-mist p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
+            <div className="flex flex-col gap-6 rounded-[2rem] border border-line bg-white p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
               <div>
                 <h2 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                   Want to help build Jobbit?

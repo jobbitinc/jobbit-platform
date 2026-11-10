@@ -166,7 +166,7 @@ export default function AboutPage() {
               </div>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink href="/team" variant="dark">
-                  Meet the founder & team
+                  The vision behind Jobbit
                 </ButtonLink>
                 <ButtonLink href="/how-it-works" variant="outline-dark">
                   How Jobbit works

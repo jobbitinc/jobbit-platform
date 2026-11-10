@@ -405,7 +405,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <ButtonLink href="/team" variant="dark">
-                    Meet the team
+                    The vision behind Jobbit
                   </ButtonLink>
                   <ButtonLink href="/about" variant="outline-dark">
                     Our story

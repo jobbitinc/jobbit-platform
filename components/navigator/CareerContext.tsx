@@ -223,11 +223,15 @@ export function CareerProvider({ children }: { children: React.ReactNode }) {
 
         let result: MatchResultSet | null = null;
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 38000);
           const response = await fetch("/api/match", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ quizAnswers }),
+            signal: controller.signal,
           });
+          clearTimeout(timeoutId);
           const body = (await response.json()) as {
             ok?: boolean;
             message?: string;

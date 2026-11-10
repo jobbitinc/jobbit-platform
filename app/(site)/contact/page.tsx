@@ -80,18 +80,18 @@ export default async function ContactPage({
                 </div>
                 <dl className="mt-5 space-y-3 text-sm">
                   <div>
-                    <dt className="text-slate-ink/70">General</dt>
+                    <dt className="text-slate-ink/70">Partnerships & Demos</dt>
                     <dd>
-                      <a href={`mailto:${company.email}`} className="font-semibold text-ink hover:text-electric">
-                        {company.email}
+                      <a href={`mailto:${company.partnershipsEmail}`} className="font-semibold text-ink hover:text-electric">
+                        {company.partnershipsEmail}
                       </a>
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-ink/70">Partnerships</dt>
+                    <dt className="text-slate-ink/70">General</dt>
                     <dd>
-                      <a href={`mailto:${company.partnershipsEmail}`} className="font-semibold text-ink hover:text-electric">
-                        {company.partnershipsEmail}
+                      <a href={`mailto:${company.email}`} className="font-semibold text-ink hover:text-electric">
+                        {company.email}
                       </a>
                     </dd>
                   </div>
