@@ -144,6 +144,9 @@ export default function AboutPage() {
             <Reveal>
               <SectionHeading eyebrow="Our story" title="Why we started Jobbit" />
               <blockquote className="mt-10 rounded-2xl border-l-4 border-lime bg-white p-6 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-muted mb-2">
+                  {founder.leadInQuote || "At the heart of her work is a simple belief:"}
+                </p>
                 <p className="font-display text-xl font-medium leading-snug text-ink">&ldquo;{founder.quote}&rdquo;</p>
                 <footer className="mt-4 flex items-center gap-3.5">
                   {founder.photo ? (
@@ -160,9 +163,15 @@ export default function AboutPage() {
             </Reveal>
             <Reveal delay={0.1}>
               <div className="space-y-6 text-lg leading-relaxed text-slate-ink">
-                {founder.story.map((p) => (
-                  <p key={p.slice(0, 32)}>{p}</p>
-                ))}
+                {founder.story.map((p) =>
+                  p === "That insight became Jobbit." ? (
+                    <p key={p} className="font-display text-xl font-bold text-ink sm:text-2xl">
+                      {p}
+                    </p>
+                  ) : (
+                    <p key={p.slice(0, 32)}>{p}</p>
+                  )
+                )}
               </div>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink href="/team" variant="dark">

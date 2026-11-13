@@ -10,7 +10,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "The Vision Behind Jobbit",
   description:
-    "Learn about the founder, vision, and mission driving Jobbit to prepare the next generation for the changing world of work.",
+    "Building the AI-Powered Infrastructure Connecting the Next Generation of Talent.",
   alternates: { canonical: "/team" },
 };
 
@@ -108,7 +108,7 @@ export default function TeamPage() {
             The Vision Behind <span className="site-text-gradient">Jobbit.</span>
           </>
         }
-        description="We're educators, technologists, and workforce builders united by one belief: every young person deserves a clear path to a meaningful career."
+        description="Building the AI-Powered Infrastructure Connecting the Next Generation of Talent."
       />
 
       {/* Founder */}
@@ -128,12 +128,20 @@ export default function TeamPage() {
             <Reveal delay={0.1}>
               <SectionHeading eyebrow="Meet the founder" title="A founder's story" />
               <div className="mt-6 space-y-5 text-lg leading-relaxed text-slate-ink">
-                {founder.story.map((p) => (
-                  <p key={p.slice(0, 32)}>{p}</p>
-                ))}
+                {founder.story.map((p) =>
+                  p === "That insight became Jobbit." ? (
+                    <p key={p} className="font-display text-xl font-bold text-ink sm:text-2xl">
+                      {p}
+                    </p>
+                  ) : (
+                    <p key={p.slice(0, 32)}>{p}</p>
+                  )
+                )}
               </div>
-              <p className="mt-6 text-[15px] leading-relaxed text-slate-ink">{founder.bio}</p>
               <blockquote className="mt-8 rounded-2xl bg-mist p-6 border-l-4 border-lime">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-muted mb-2">
+                  {founder.leadInQuote || "At the heart of her work is a simple belief:"}
+                </p>
                 <p className="font-display text-xl font-medium leading-snug text-ink">&ldquo;{founder.quote}&rdquo;</p>
                 <p className="mt-2 text-sm font-semibold text-slate-ink">&mdash; {founder.name}, {founder.role}</p>
               </blockquote>

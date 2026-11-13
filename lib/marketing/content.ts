@@ -18,9 +18,9 @@ export const company = {
 export type SocialNetwork = "linkedin" | "instagram" | "x" | "tiktok" | "youtube";
 
 export const socialLinks: { network: SocialNetwork; label: string; href?: string }[] = [
+  { network: "x", label: "X (Twitter)", href: "https://x.com/jobbitinc" },
+  { network: "instagram", label: "Instagram", href: "https://www.instagram.com/jobbitinc" },
   { network: "linkedin", label: "LinkedIn" },
-  { network: "instagram", label: "Instagram" },
-  { network: "x", label: "X (Twitter)" },
   { network: "tiktok", label: "TikTok" },
   { network: "youtube", label: "YouTube" },
 ];
@@ -69,18 +69,24 @@ export type TeamMember = {
   linkedin?: string;
 };
 
-export const founder: TeamMember & { story: string[]; quote: string } = {
+export const founder: TeamMember & {
+  leadInQuote?: string;
+  story: string[];
+  quote: string;
+} = {
   name: "Fatima Scipio",
   role: "Founder & CEO",
   photo: "/fatima.jpg",
   bio: "Fatima holds a Master's degree in Urban Affairs with a concentration in Nonprofit Management and Youth Development. She brings three decades of frontline experience to Jobbit and a deep understanding of the gap between young people, opportunity, and the systems designed to connect the two.",
   story: [
-    "For more than 30 years, Fatima Scipio has been connecting young people to possibility. Her work began with young people in her Bronx, New York community and continued through a career spanning education, youth development, workforce development, nonprofit leadership, community impact, and entrepreneurship. From serving as a middle school teacher to leading college and career programming, she has spent her career helping young people see opportunities they may not have known existed.",
+    "For more than 30 years, Fatima has been connecting young people to possibility. Her work began with young people in her Bronx, New York community and continued through a career spanning education, youth development, workforce development, nonprofit leadership, community impact, and entrepreneurship. From serving as a middle school teacher to leading college and career programming, she has spent her career helping young people see opportunities they may not have known existed.",
     "The idea for Jobbit became personal when Fatima's nephew called asking for help finding a trade school or job. After spending hours searching through disconnected websites, job boards, training programs, and employment opportunities, she recognized a larger problem: young people were being asked to navigate a workforce system that was never designed around them.",
-    "She had seen the same challenge firsthand while serving as Director of College and Career Services at a local nonprofit. When students skipped career workshops, their explanation was often simple: “I don't know what I want to do.” Fatima understood that these young people weren't lacking ambition, they needed greater exposure to what was possible and a clearer roadmap for getting there.",
-    "That insight became Jobbit. Designed for young people ages 16–24 (both high school and out-of-school youth), Jobbit is creating an AI-powered career-readiness and workforce ecosystem that helps youth discover their talents and gifts, understand potential pathways, build career readiness, and connect to opportunities.",
-    "Fatima's vision is to scale Jobbit into the nation's leading youth workforce platform—creating infrastructure that can serve young people while connecting schools, employers, and workforce systems around the next generation of talent.",
+    "She had seen the same challenge firsthand while serving as Director of College and Career Services at the Boys & Girls Club of Mercer County. When students skipped career workshops, their explanation was often simple: “I don't know what I want to do.” Fatima understood that these young people weren't lacking ambition—they needed greater exposure to what was possible and a clearer roadmap for getting there.",
+    "That insight became Jobbit.",
+    "Designed for young people ages 16–24, Jobbit is creating an AI-powered career-readiness and workforce ecosystem that helps youth discover their talents and gifts, understand potential pathways, build career readiness, and connect to opportunities. Fatima's vision is to scale Jobbit into the nation's leading youth workforce platform—creating infrastructure that can serve young people while connecting schools, employers, and workforce systems around the next generation of talent.",
+    "Fatima holds a Master's degree in Urban Affairs with a concentration in Nonprofit Management and Youth Development. She brings three decades of frontline experience to Jobbit and a deep understanding of the gap between young people, opportunity, and the systems designed to connect the two.",
   ],
+  leadInQuote: "At the heart of her work is a simple belief:",
   quote: "Every young person deserves to see what is possible.",
 };
 

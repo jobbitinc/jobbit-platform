@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Bebas_Neue, DM_Mono, DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Barlow_Condensed, Bebas_Neue, DM_Mono, DM_Sans, DM_Serif_Display, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@/components/site/Analytics";
 import "./globals.css";
 
@@ -39,6 +39,13 @@ const dmSerif = DM_Serif_Display({
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -64,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlowCondensed.variable} ${bebasNeue.variable} ${dmSans.variable} ${dmMono.variable} ${dmSerif.variable} h-full antialiased`}
+      className={`${barlowCondensed.variable} ${bebasNeue.variable} ${dmSans.variable} ${dmMono.variable} ${dmSerif.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         {children}
