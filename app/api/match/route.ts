@@ -8,7 +8,7 @@ import {
   validateQuizAnswers,
 } from "@/lib/career/validation";
 
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = process.env.ANTHROPIC_MODEL?.trim() || "claude-haiku-5-5";
 const MAX_ATTEMPTS = 2;
 
 const SYSTEM_PROMPT = `You are Jobbit, an expert AI career navigator specializing in skilled trades careers for young people ages 16–30 in New Jersey. You have deep knowledge of New Jersey trade schools, county colleges, registered apprenticeships, union locals, NJDOL workforce programs, certification requirements, salary ranges, and career progression for skilled trades in New Jersey.
@@ -130,7 +130,8 @@ export async function POST(req: Request) {
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       const response = await anthropic.messages.create({
         model: MODEL,
-        max_tokens: 4500,
+        max_tokens: 5000,
+        thinking: { type: "disabled" },
         system: SYSTEM_PROMPT,
         messages,
       });
