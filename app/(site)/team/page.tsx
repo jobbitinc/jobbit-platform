@@ -9,8 +9,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "The Vision Behind Jobbit",
-  description:
-    "Building the AI-Powered Infrastructure Connecting the Next Generation of Talent.",
+  description: "A clear path to a meaningful career",
   alternates: { canonical: "/team" },
 };
 
@@ -105,10 +104,10 @@ export default function TeamPage() {
         eyebrow="The vision behind Jobbit"
         title={
           <>
-            The Vision Behind <span className="site-text-gradient">Jobbit.</span>
+            The Vision Behind <span className="site-text-gradient">Jobbit</span>
           </>
         }
-        description="Building the AI-Powered Infrastructure Connecting the Next Generation of Talent."
+        description="A clear path to a meaningful career"
       />
 
       {/* Founder */}
